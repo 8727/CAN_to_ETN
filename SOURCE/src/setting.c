@@ -83,53 +83,6 @@ void ReadConfig(void){
     buffEeprom[ADDR_RF24_TYPE_ADDR_4] = 0x00;
     
 /*----------------------------------------------------------------------------*/
-    //ADC
-    buffEeprom[ADDR_SENSOR_ON_OFF] = SENSOR_ON_OFF;
-    buffEeprom[ADDR_CALIB_SENSOR1] = CALIB_SENSOR1;
-    buffEeprom[ADDR_CALIB_SENSOR2] = CALIB_SENSOR2;
-    buffEeprom[ADDR_CALIB_SENSOR3] = CALIB_SENSOR3;
-    buffEeprom[ADDR_CALIB_SENSOR4] = CALIB_SENSOR4;
-    buffEeprom[ADDR_CALIB_PRESSURE1] = CALIB_PRESSURE1;
-    buffEeprom[ADDR_CALIB_PRESSURE2] = CALIB_PRESSURE2;
-    buffEeprom[ADDR_CALIB_PRESSURE3] = CALIB_PRESSURE3;
-    buffEeprom[ADDR_CALIB_PRESSURE4] = CALIB_PRESSURE4;
-    buffEeprom[ADDR_ALARM_SENSOR1] = ALARM_SENSOR1;
-    buffEeprom[ADDR_ALARM_SENSOR2] = ALARM_SENSOR2;
-    buffEeprom[ADDR_ALARM_SENSOR3] = ALARM_SENSOR3;
-    buffEeprom[ADDR_ALARM_SENSOR4] = ALARM_SENSOR4;
-    
-    buffEeprom[ADDR_CALIB_POWER_V] = CALIB_POWER_V;
-    //FAN
-    buffEeprom[ADDR_FAN_ON_OFF] = FAN_ON_OFF;
-    WriteData16ToBuffer(ADDR_SENSOR_INTRV, SENSOR_INTRV, buffEeprom);
-    WriteData16ToBuffer(ADDR_MAX_JOB, MAX_JOB, buffEeprom);
-    WriteData16ToBuffer(ADDR_INTERVAL_HUM, INTERVAL_HUM, buffEeprom);
-    WriteData16ToBuffer(ADDR_DELAY_HUM, DELAY_HUM, buffEeprom);
-    WriteData16ToBuffer(ADDR_MAX_TEMPR, MAX_TEMPR, buffEeprom);
-    WriteData16ToBuffer(ADDR_MAX_HUM, MAX_HUM, buffEeprom);
-    buffEeprom[ADDR_GIST_TEMPR] = GIST_TEMPR;
-    buffEeprom[ADDR_GIST_HUM] = GIST_HUM;
-    //HEATING
-    buffEeprom[ADDR_HEAT_ON_OFF] = HEAT_ON_OFF;
-    buffEeprom[ADDR_HEAT_TEMPER_R1] = HEAT_TEMPER_R1;
-    buffEeprom[ADDR_HEAT_TEMPER_R2] = HEAT_TEMPER_R2;
-    buffEeprom[ADDR_HEAT_TEMPER_R3] = HEAT_TEMPER_R3;
-    buffEeprom[ADDR_HEAT_TEMPER_R4] = HEAT_TEMPER_R4;
-    buffEeprom[ADDR_HEAT_TEMPER_R5] = HEAT_TEMPER_R5;
-    WriteData16ToBuffer(ADDR_HEAT_JOB_DEFAULT_DELAY, HEAT_JOB_DEFAULT_DELAY, buffEeprom);
-    WriteData16ToBuffer(ADDR_HEAT_JOB_INTERVAL, HEAT_JOB_INTERVAL, buffEeprom);
-    WriteData16ToBuffer(ADDR_HEAT_SENSOR_INTERVAL, HEAT_SENSOR_INTERVAL, buffEeprom);
-    WriteData16ToBuffer(ADDR_HEAT_TOP_TEMPERATURE, HEAT_TOP_TEMPERATURE, buffEeprom);
-    buffEeprom[ADDR_HEAT_GIST_TEMPERATURE] = HEAT_GIST_TEMPERATURE;
-    buffEeprom[ADDR_HEAT_STEP_DELAY] = HEAT_STEP_DELAY;
-    buffEeprom[ADDR_HEAT_MAX_DELAY] = HEAT_MAX_DELAY;
-    //WATER
-    WriteData32ToBuffer(ADDR_WATER_HOT_COUNTER, WATER_HOT_COUNTER, buffEeprom);
-    WriteData32ToBuffer(ADDR_WATER_COLD_COUNTER, WATER_COLD_COUNTER, buffEeprom);
-    WriteData16ToBuffer(ADDR_WATER_CALIB_HOT, WATER_CALIB_HOT, buffEeprom);
-    WriteData16ToBuffer(ADDR_WATER_CALIB_COLD, WATER_CALIB_COLD, buffEeprom);
-    WriteData16ToBuffer(ADDR_WATER_CALIB_OUT_HOT, WATER_CALIB_OUT_HOT, buffEeprom);
-    WriteData16ToBuffer(ADDR_WATER_CALIB_OUT_COLD, WATER_CALIB_OUT_COLD, buffEeprom);
     
 /*----------------------------------------------------------------------------*/
     Ee24cxxWrite(buffEeprom);
@@ -143,18 +96,6 @@ void ReadConfig(void){
   settings.number = buffEeprom[ADDR_DEVICE_NUMBER];
   settings.rtcCalib = buffEeprom[ADDR_RTC_CALIBRATION];
   
-  settings.rotation = buffEeprom[ADDR_LCD_ROTATION];
-  switch(settings.rotation){
-    case 0x27:                  //Dspl_Rotation_270
-    case 0x09:                  //Dspl_Rotation_90
-      settings.maxX = 0x01E0; 
-      settings.maxY = 0x0140;
-    break; 
-    default:                    //Dspl_Rotation_0 Rotation_180
-      settings.maxX = 0x0140; 
-      settings.maxY = 0x01E0;
-    break;
-  }
   settings.canSpeed = ReadData32Buffer(ADDR_CAN_SPEED, buffEeprom);
   settings.rs485Speed = ReadData16Buffer(ADDR_RS485_SPEED, buffEeprom);
   settings.canDevice = (settings.type << 0x08) | (settings.number << 0x04);
@@ -175,32 +116,6 @@ void ReadConfig(void){
   settings.rf24TypeSend4 = buffEeprom[ADDR_RF24_TYPE_SEND_4];
   settings.rf24TypeAddr4 = buffEeprom[ADDR_RF24_TYPE_ADDR_4];
 /*----------------------------------------------------------------------------*/
-  //ADC
-  settings.sensorOnOff = buffEeprom[ADDR_SENSOR_ON_OFF];
-  settings.calibSensor1 = buffEeprom[ADDR_CALIB_SENSOR1];
-  settings.calibSensor2 = buffEeprom[ADDR_CALIB_SENSOR2];
-  settings.calibSensor3 = buffEeprom[ADDR_CALIB_SENSOR3];
-  settings.calibSensor4 = buffEeprom[ADDR_CALIB_SENSOR4];
-  settings.calibPressure1 = buffEeprom[ADDR_CALIB_PRESSURE1];
-  settings.calibPressure2 = buffEeprom[ADDR_CALIB_PRESSURE2];
-  settings.calibPressure3 = buffEeprom[ADDR_CALIB_PRESSURE3];
-  settings.calibPressure4 = buffEeprom[ADDR_CALIB_PRESSURE4];
-  settings.alarmSensor1 = buffEeprom[ADDR_ALARM_SENSOR1];
-  settings.alarmSensor2 = buffEeprom[ADDR_ALARM_SENSOR2];
-  settings.alarmSensor3 = buffEeprom[ADDR_ALARM_SENSOR3];
-  settings.alarmSensor4 = buffEeprom[ADDR_ALARM_SENSOR4];
-  
-  settings.calibPowerV = buffEeprom[ADDR_CALIB_POWER_V];
-  //FAN
-  settings.fanOnOff = buffEeprom[ADDR_FAN_ON_OFF];
-  settings.fanSensorInterval = ReadData16Buffer(ADDR_SENSOR_INTRV, buffEeprom);
-  settings.fanMaxJob = ReadData16Buffer(ADDR_MAX_JOB, buffEeprom);
-  settings.fanIntervalHum = ReadData16Buffer(ADDR_INTERVAL_HUM, buffEeprom);
-  settings.fanDelayHum = ReadData16Buffer(ADDR_DELAY_HUM, buffEeprom);
-  settings.fanMaxTemperature = ReadData16Buffer(ADDR_MAX_TEMPR, buffEeprom);
-  settings.fanMaxHumidity = ReadData16Buffer(ADDR_MAX_HUM, buffEeprom);
-  settings.fanGistTemperature = buffEeprom[ADDR_GIST_TEMPR];
-  settings.fanGistHumidity = buffEeprom[ADDR_GIST_HUM];
   
   
   
@@ -236,13 +151,13 @@ void Setting(void){
   RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
   
 //  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP + AFIO_MAPR_I2C1_REMAP;
-  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP;
+  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
   
   RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
-  RCC->APB2ENR |= RCC_APB2ENR_IOPDEN;
-  RCC->APB2ENR |= RCC_APB2ENR_IOPEEN;
+//  RCC->APB2ENR |= RCC_APB2ENR_IOPDEN;
+//  RCC->APB2ENR |= RCC_APB2ENR_IOPEEN;
 
   
   Ee24cxxInit();
@@ -255,5 +170,4 @@ void Setting(void){
     printf("\t\tStop setting\n\r\n");
   #endif
   
-//  W25QxxEraseBlocks();
 }
