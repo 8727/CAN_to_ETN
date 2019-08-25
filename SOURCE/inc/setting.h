@@ -105,13 +105,13 @@ static const uint8_t IP_NTP[] =          {89, 109, 251, 21};
 #define ADDR_________X                   0x20 // 0x20-0x2F
 
 /* Define --------------------------------------------------------------------*/
-#define ADDR_W5500_IP                    0x30 // 0x30-0x33
-#define ADDR_W5500_NS                    0x34 // 0x34-0x37
-#define ADDR_W5500_GW                    0x38 // 0x38-0x3B
-#define ADDR_W5500_SEND                  0x3C // 0x3C-0x3F
-#define ADDR_W5500_MAC                   0x40 // 0x40-0x45
-#define ADDR_W5500_DHCP                  0x46
-#define ADDR__________X                  0x47
+#define ADDR_W5500_MAC                   0x30 // 0x30-0x35
+#define ADDR_W5500_DHCP                  0x36
+#define ADDR__________X                  0x37
+#define ADDR_W5500_IP                    0x38 // 0x38-0x3B
+#define ADDR_W5500_NS                    0x3C // 0x3C-0x3F
+#define ADDR_W5500_GW                    0x40 // 0x40-0x43
+#define ADDR_W5500_SEND                  0x44 // 0x44-0x47
 #define ADDR_W5500_NTP                   0x48 // 0x48-0x4B
 
 /* Define --------------------------------------------------------------------*/
