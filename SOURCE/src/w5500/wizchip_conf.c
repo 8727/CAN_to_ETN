@@ -1,5 +1,57 @@
-
+//****************************************************************************/ 
+//!
+//! \file wizchip_conf.c
+//! \brief WIZCHIP Config Header File.
+//! \version 1.0.1
+//! \date 2013/10/21
+//! \par  Revision history
+//!       <2015/02/05> Notice
+//!        The version history is not updated after this point.
+//!        Download the latest version directly from GitHub. Please visit the our GitHub repository for ioLibrary.
+//!        >> https://github.com/Wiznet/ioLibrary_Driver
+//!       <2014/05/01> V1.0.1  Refer to M20140501
+//!        1. Explicit type casting in wizchip_bus_readdata() & wizchip_bus_writedata()
+//            Issued by Mathias ClauBen.
+//!           uint32_t type converts into ptrdiff_t first. And then recoverting it into uint8_t*
+//!           For remove the warning when pointer type size is not 32bit.
+//!           If ptrdiff_t doesn't support in your complier, You should must replace ptrdiff_t into your suitable pointer type.
+//!       <2013/10/21> 1st Release
+//! \author MidnightCow
+//! \copyright
+//!
+//! Copyright (c)  2013, WIZnet Co., LTD.
+//! All rights reserved.
+//! 
+//! Redistribution and use in source and binary forms, with or without 
+//! modification, are permitted provided that the following conditions 
+//! are met: 
+//! 
+//!     * Redistributions of source code must retain the above copyright 
+//! notice, this list of conditions and the following disclaimer. 
+//!     * Redistributions in binary form must reproduce the above copyright
+//! notice, this list of conditions and the following disclaimer in the
+//! documentation and/or other materials provided with the distribution. 
+//!     * Neither the name of the <ORGANIZATION> nor the names of its 
+//! contributors may be used to endorse or promote products derived 
+//! from this software without specific prior written permission. 
+//! 
+//! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+//! AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+//! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+//! ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+//! LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+//! CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+//! SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+//! INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+//! CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+//! ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+//! THE POSSIBILITY OF SUCH DAMAGE.
+//
+//*****************************************************************************/
+//A20140501 : for use the type - ptrdiff_t
 #include <stddef.h>
+//
+
 #include "wizchip_conf.h"
 
 /////////////

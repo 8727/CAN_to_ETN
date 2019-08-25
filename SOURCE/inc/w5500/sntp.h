@@ -30,7 +30,7 @@ typedef unsigned int tdist;
 typedef struct _ntpformat
 {
 
-	uint8_t  dstaddr[4];    /* destination (local) address */
+	uint8_t  dstaddr[4];        /* destination (local) address */
 	char    version;        /* version number */
 	char    leap;           /* leap indicator */
 	char    mode;           /* mode */
