@@ -47,6 +47,7 @@ void ReadConfig(void){
     printf("< OK >    Read configuration\r\n");
   #endif
   uint8_t buffEeprom[EEPROM_BUFF];
+  uint8_t i;
   Ee24cxxRead(buffEeprom);
   if(0xFF != buffEeprom[ADDR_STATUS]){
     RtcTypeDef dateBuild;
@@ -84,24 +85,14 @@ void ReadConfig(void){
     buffEeprom[ADDR_RF24_TYPE_ADDR_4] = 0x00;
     
 /*----------------------------------------------------------------------------*/
-    buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
-    buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
-    buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
-    buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
-    buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
-    buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
-    buffEeprom[ADDR_W5500_IP] = defNet.ip[0x00];
-    buffEeprom[ADDR_W5500_IP] = defNet.ip[0x01];
-    buffEeprom[ADDR_W5500_IP] = defNet.ip[0x02];
-    buffEeprom[ADDR_W5500_IP] = defNet.ip[0x03];
-    buffEeprom[ADDR_W5500_NS] = defNet.sn[0x00];
-    buffEeprom[ADDR_W5500_NS] = defNet.sn[0x01];
-    buffEeprom[ADDR_W5500_NS] = defNet.sn[0x02];
-    buffEeprom[ADDR_W5500_NS] = defNet.sn[0x03];
-    buffEeprom[ADDR_W5500_GW] = defNet.gw[0x00];
-    buffEeprom[ADDR_W5500_GW] = defNet.gw[0x01];
-    buffEeprom[ADDR_W5500_GW] = defNet.gw[0x02];
-    buffEeprom[ADDR_W5500_GW] = defNet.gw[0x03];
+    WriteData32ToBuffer(ADDR_W5500_MAC, IP_MAC, buffEeprom);
+    WriteData16ToBuffer(ADDR_W5500_MAC + 0x04, RF24_ADDR, buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_IP, ReadData32Buffer(0x00, (uint8_t*)IP_ADDR), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_NS, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_GW, ReadData32Buffer(0x00, (uint8_t*)IP_GATE), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_SEND, ReadData32Buffer(0x00, (uint8_t*)IP_SEND), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_NTP, ReadData32Buffer(0x00, (uint8_t*)IP_NTP), buffEeprom);
+
 
 /*----------------------------------------------------------------------------*/
     Ee24cxxWrite(buffEeprom);
@@ -135,19 +126,10 @@ void ReadConfig(void){
   settings.rf24TypeSend4 = buffEeprom[ADDR_RF24_TYPE_SEND_4];
   settings.rf24TypeAddr4 = buffEeprom[ADDR_RF24_TYPE_ADDR_4];
 /*----------------------------------------------------------------------------*/
-  defNet.ip[0x00] = buffEeprom[ADDR_W5500_IP];
-  defNet.ip[0x01] = buffEeprom[ADDR_W5500_IP];
-  defNet.ip[0x02] = buffEeprom[ADDR_W5500_IP];
-  defNet.ip[0x03] = buffEeprom[ADDR_W5500_IP];
-  defNet.sn[0x00] = buffEeprom[ADDR_W5500_NS];
-  defNet.sn[0x01] = buffEeprom[ADDR_W5500_NS];
-  defNet.sn[0x02] = buffEeprom[ADDR_W5500_NS];
-  defNet.sn[0x03] = buffEeprom[ADDR_W5500_NS];
-  defNet.gw[0x00] = buffEeprom[ADDR_W5500_GW];
-  defNet.gw[0x01] = buffEeprom[ADDR_W5500_GW];
-  defNet.gw[0x02] = buffEeprom[ADDR_W5500_GW];
-  defNet.gw[0x03] = buffEeprom[ADDR_W5500_GW];
-
+  for(i = 0x00; i < 0x06; i++){ defNet.mac[0x05 - i] = buffEeprom[ADDR_W5500_MAC + i];} // MAC адрес
+  for(i = 0x00; i < 0x04; i++){ defNet.ip[0x03 - i] = buffEeprom[ADDR_W5500_IP + i];} // IP адрес
+  for(i = 0x00; i < 0x04; i++){ defNet.sn[0x03 - i] = buffEeprom[ADDR_W5500_NS + i];} // SN адрес
+  for(i = 0x00; i < 0x04; i++){ defNet.gw[0x03 - i] = buffEeprom[ADDR_W5500_GW + i];} // GW адрес
   
   
   

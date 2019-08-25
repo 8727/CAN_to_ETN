@@ -8,7 +8,7 @@ void RTC_IRQHandler(void){
       RtcTimeStamp();
       printf("\r\n");
     #endif
-    if(0x00 != settings.dhcpOn && 0x00 != settings.dhcp) EthernetDhcpRutine();
+    if(0x00 != settings.dhcpOn && 0x00 != settings.dhcpSt) EthernetDhcpRutine();
   }
 }
 

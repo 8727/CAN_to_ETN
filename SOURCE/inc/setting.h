@@ -21,7 +21,7 @@
 #define DEVICE_NUMBER                    0x00        // Device number
 #define RTC_CALIBRATION                  0x00        // RTC CalibrationPpm
 #define LCD_ROTATION                     0x09        // 0x27 Rotation_270, 0x18 Rotation_180, 0x09 Rotation_90, 0x00 Rotation_0
-#define TIME_ZONE                        0x00        //
+#define TIME_ZONE                        28          //
 
 #define RF24_ADDR                        0x8727      //
 #define RF24_PRIM                        0x70
@@ -30,10 +30,12 @@
 #define RF24_POWER                       0x03        // 0x00 -18dBm, 0x01 -12dBm, 0x02 -6dBm, 0x03 0dBm
 #define RF24_CH                          0x70        // 0-125 0x00-0x7D
 
-#define IP_MAC                           {0x00, 0x08, 0xdc, 0xab, 0xcd, 0xef}
-#define IP_ADDR                          {192, 168, 8, 197}
-#define IP_MASK                          {255, 255, 255, 0}
-#define IP_GATE                          {192, 168, 8, 1}
+#define IP_MAC                           (*(unsigned long *)0x1FFFF7F0) //0x1FFFF7E8 0x1FFFF7EC 0x1FFFF7F0
+static const uint8_t IP_ADDR[] =         {10, 0, 0, 253};
+static const uint8_t IP_MASK[] =         {255, 255, 255, 0};
+static const uint8_t IP_GATE[] =         {10, 0, 0, 254};
+static const uint8_t IP_SEND[] =         {10, 0, 0, 252};
+static const uint8_t IP_NTP[] =          {89, 109, 251, 21};
 
 //#define HEATING_MAX_DEVICES              0x05
 //#define DS18B20_MAX_DEVICES              0x08
@@ -106,7 +108,7 @@
 #define ADDR_W5500_IP                    0x30 // 0x30-0x33
 #define ADDR_W5500_NS                    0x34 // 0x34-0x37
 #define ADDR_W5500_GW                    0x38 // 0x38-0x3B
-#define ADDR_W5500_IP_SEND               0x3C // 0x3C-0x3F
+#define ADDR_W5500_SEND                  0x3C // 0x3C-0x3F
 #define ADDR_W5500_MAC                   0x40 // 0x40-0x45
 #define ADDR_W5500_DHCP                  0x46
 #define ADDR__________X                  0x47
@@ -125,13 +127,14 @@
 /* Define --------------------------------------------------------------------*/
 #define  W5500_SOCK_DHCP                 0x07
 #define  W5500_SOCK_SNTP                 0x06
-//#define  W5500_SOCK_SNTP                 0x05
+//#define  W5500_SOCK_HTTP                 0x05
 //#define  W5500_SOCK_SNTP                 0x04
 //#define  W5500_SOCK_SNTP                 0x03
 //#define  W5500_SOCK_SNTP                 0x02
 //#define  W5500_SOCK_SNTP                 0x01
-//#define  W5500_SOCK_SNTP                 0x00
+#define  W5500_SOCK_HTTP                 0x00
 #define  W5500_DATA_BUF_SIZE             2048
+
 /* Define --------------------------------------------------------------------*/
 struct settingsInitTypeDef{
   uint32_t dateBuild;
@@ -164,9 +167,9 @@ struct settingsInitTypeDef{
   uint8_t  rf24TypeAddr3;
   uint8_t  rf24TypeSend4;
   uint8_t  rf24TypeAddr4;
-  
+  // W5500
   uint8_t  dhcpOn;
-  uint8_t  dhcp;
+  uint8_t  dhcpSt;
   
   
   

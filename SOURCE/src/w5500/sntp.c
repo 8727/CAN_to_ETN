@@ -48,10 +48,10 @@ uint16_t ntp_retry_cnt=0; //counting the ntp retry number
 25) UTC+01:00 Macedonia, France (metropolitan), the Netherlands, Norway, Poland, Serbia, Slovakia, Slovenia, Sweden, Switzerland
 26) UTC+02:00 Libya, Egypt, Malawi, Mozambique, South Africa, Zambia, Zimbabwe, (Summer)Bulgaria, Cyprus, Estonia,
 27) UTC+02:00 Finland, Greece, Israel, Jordan, Latvia, Lebanon, Lithuania, Moldova, Palestine, Romania, Syria, Turkey, Ukraine
-28) UTC+03:00 Belarus, Djibouti, Eritrea, Ethiopia, Iraq, Kenya, Madagascar, Russia (Kaliningrad Oblast), Saudi Arabia,
+28) UTC+03:00 Belarus, Djibouti, Eritrea, Ethiopia, Iraq, Kenya, Madagascar, Russia (European), Russia (Kaliningrad Oblast), Saudi Arabia,
 29) UTC+03:00 South Sudan, Sudan, Somalia, South Sudan, Tanzania, Uganda, Yemen
 30) UTC+03:30 (Summer)Iran
-31) UTC+04:00 Armenia, Azerbaijan, Georgia, Mauritius, Oman, Russia (European), Seychelles, United Arab Emirates
+31) UTC+04:00 Armenia, Azerbaijan, Georgia, Mauritius, Oman, Seychelles, United Arab Emirates
 32) UTC+04:30 Afghanistan
 33) UTC+05:00 Kazakhstan (West), Maldives, Pakistan, Uzbekistan
 34) UTC+05:30 India, Sri Lanka

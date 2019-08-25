@@ -62,7 +62,7 @@ void EthernetIpAssign(void){      //будет вызвана при перво�
   getDNSfromDHCP(netInfo.dns);    //адрес DNS 
   netInfo.dhcp = NETINFO_DHCP;
   EthernetNetwork();              // apply from dhcp
-  settings.dhcp = true;
+  settings.dhcpSt = true;
   #ifdef ETHERNET
      printf("DHCP LEASED TIME : %ld Sec.\r\n", (long)getDHCPLeasetime());//получить время аренды на сервере DHCP
   #endif
@@ -129,16 +129,21 @@ void EthernetInit(void){
   
   reg_wizchip_cs_cbfunc(EthernetCsLow, EthernetCsHight);
   reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte);
+  reg_wizchip_spiburst_cbfunc(EthernetReadBuff, EthernetWriteBuff);
   
   wizchip_init(bufSize, bufSize);
-  do{ //GPIOC->ODR ^= GPIO_Pin_13;
+  do{
     if(ctlwizchip(CW_GET_PHYLINK, (void*)&temp) == -1){
       #ifdef ETHERNET
         printf("Unknown PHY link status.\r\n");
       #endif
     }
   }while(temp == PHY_LINK_OFF);
-  wiz_NetInfo netInfo = { .mac = IP_MAC }; // MAC адрес
+  wiz_NetInfo netInfo;
+  for(uint8_t i = 0x00; i < 0x06; i++){
+    netInfo.mac[i] = defNet.mac[i]; // MAC адрес
+  }
+  netInfo.dhcp = NETINFO_DHCP; 
   setSHAR(netInfo.mac); //настройка
   if(0x00 < settings.dhcpOn){
     DHCP_init(W5500_SOCK_DHCP, DHCPDATABUF); //передаем номер сокета
