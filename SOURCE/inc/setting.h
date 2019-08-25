@@ -9,7 +9,8 @@
 #include "can.h"
 #include "rs485.h"
 #include "nrf24.h"
-#include "w5500.h"
+#include "ethernet.h"
+#include "wizchip_conf.h"
 
 
 /* Define --------------------------------------------------------------------*/
@@ -29,6 +30,7 @@
 #define RF24_POWER                       0x03        // 0x00 -18dBm, 0x01 -12dBm, 0x02 -6dBm, 0x03 0dBm
 #define RF24_CH                          0x70        // 0-125 0x00-0x7D
 
+#define IP_MAC                           {0x00, 0x08, 0xdc, 0xab, 0xcd, 0xef}
 #define IP_ADDR                          {192, 168, 8, 197}
 #define IP_MASK                          {255, 255, 255, 0}
 #define IP_GATE                          {192, 168, 8, 1}
@@ -105,10 +107,10 @@
 #define ADDR_W5500_NS                    0x34 // 0x34-0x37
 #define ADDR_W5500_GW                    0x38 // 0x38-0x3B
 #define ADDR_W5500_IP_SEND               0x3C // 0x3C-0x3F
-#define ADDR_W5500_DNS1                  0x40 // 0x40-0x43
-#define ADDR_W5500_DNS2                  0x44 // 0x44-0x47
-#define ADDR_W5500_MAC                   0x48 // 0x48-0x4C
-
+#define ADDR_W5500_MAC                   0x40 // 0x40-0x45
+#define ADDR_W5500_DHCP                  0x46
+#define ADDR__________X                  0x47
+#define ADDR_W5500_NTP                   0x48 // 0x48-0x4B
 
 /* Define --------------------------------------------------------------------*/
 #define PRIORITY_RTC                     0x0E
@@ -120,6 +122,16 @@
 #define PRIORITY_RF24                    0x00
 #define PRIORITY_W5500                   0x00
 
+/* Define --------------------------------------------------------------------*/
+#define  W5500_SOCK_DHCP                 0x07
+#define  W5500_SOCK_SNTP                 0x06
+//#define  W5500_SOCK_SNTP                 0x05
+//#define  W5500_SOCK_SNTP                 0x04
+//#define  W5500_SOCK_SNTP                 0x03
+//#define  W5500_SOCK_SNTP                 0x02
+//#define  W5500_SOCK_SNTP                 0x01
+//#define  W5500_SOCK_SNTP                 0x00
+#define  W5500_DATA_BUF_SIZE             2048
 /* Define --------------------------------------------------------------------*/
 struct settingsInitTypeDef{
   uint32_t dateBuild;
@@ -153,8 +165,8 @@ struct settingsInitTypeDef{
   uint8_t  rf24TypeSend4;
   uint8_t  rf24TypeAddr4;
   
-  
-  
+  uint8_t  dhcpOn;
+  uint8_t  dhcp;
   
   
   

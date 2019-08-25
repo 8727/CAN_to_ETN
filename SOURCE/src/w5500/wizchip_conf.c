@@ -429,36 +429,36 @@ int8_t wizchip_init(uint8_t* txsize, uint8_t* rxsize)
       tmp = 0;
    //M20150601 : For integrating with W5300
    #if _WIZCHIP_ == W5300
-		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-		{
-			if(txsize[i] >= 64) return -1;   //No use 64KB even if W5300 support max 64KB memory allocation
-			tmp += txsize[i];
-			if(tmp > 128) return -1;
-		}
-		if(tmp % 8) return -1;
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+    {
+      if(txsize[i] >= 64) return -1;   //No use 64KB even if W5300 support max 64KB memory allocation
+      tmp += txsize[i];
+      if(tmp > 128) return -1;
+    }
+    if(tmp % 8) return -1;
    #else
-		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-		{
-			tmp += txsize[i];
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+    {
+      tmp += txsize[i];
 
-		#if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100 and w5100s
-			if(tmp > 8) return -1;
-		#else
-			if(tmp > 16) return -1;
-		#endif
-		}
-		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-		{
-		#if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100
-			j = 0;
-			while((txsize[i] >> j != 1)&&(txsize[i] !=0)){j++;}
-			setSn_TXBUF_SIZE(i, j);
-		#else
-			setSn_TXBUF_SIZE(i, txsize[i]);
-		#endif
-		}
+    #if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100 and w5100s
+      if(tmp > 8) return -1;
+    #else
+      if(tmp > 16) return -1;
+    #endif
+    }
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+    {
+    #if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100
+      j = 0;
+      while((txsize[i] >> j != 1)&&(txsize[i] !=0)){j++;}
+      setSn_TXBUF_SIZE(i, j);
+    #else
+      setSn_TXBUF_SIZE(i, txsize[i]);
+    #endif
+    }
 
-	#endif
+  #endif
    }
 
    if(rxsize)
@@ -466,34 +466,34 @@ int8_t wizchip_init(uint8_t* txsize, uint8_t* rxsize)
       tmp = 0;
    #if _WIZCHIP_ == W5300
       for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-		{
-			if(rxsize[i] >= 64) return -1;   //No use 64KB even if W5300 support max 64KB memory allocation
-			tmp += rxsize[i];
-			if(tmp > 128) return -1;
-		}
-		if(tmp % 8) return -1;
+    {
+      if(rxsize[i] >= 64) return -1;   //No use 64KB even if W5300 support max 64KB memory allocation
+      tmp += rxsize[i];
+      if(tmp > 128) return -1;
+    }
+    if(tmp % 8) return -1;
    #else
-		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-		{
-			tmp += rxsize[i];
-		#if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100 and w5100s
-			if(tmp > 8) return -1;
-		#else
-			if(tmp > 16) return -1;
-		#endif
-		}
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+    {
+      tmp += rxsize[i];
+    #if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100 and w5100s
+      if(tmp > 8) return -1;
+    #else
+      if(tmp > 16) return -1;
+    #endif
+    }
 
-		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-		{
-		#if _WIZCHIP_ < W5200	// add condition for w5100
-			j = 0;
-			while((rxsize[i] >> j != 1)&&(txsize[i] !=0)){j++;}
-			setSn_RXBUF_SIZE(i, j);
-		#else
-			setSn_RXBUF_SIZE(i, rxsize[i]);
-		#endif
-		}
-	#endif
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+    {
+    #if _WIZCHIP_ < W5200	// add condition for w5100
+      j = 0;
+      while((rxsize[i] >> j != 1)&&(txsize[i] !=0)){j++;}
+      setSn_RXBUF_SIZE(i, j);
+    #else
+      setSn_RXBUF_SIZE(i, rxsize[i]);
+    #endif
+    }
+  #endif
    }
    return 0;
 }
@@ -614,7 +614,7 @@ int8_t wizphy_getphylink(void)
    int8_t tmp = PHY_LINK_OFF;
 #if _WIZCHIP_ == W5100S
    if(getPHYSR() & PHYSR_LNK)
-	   tmp = PHY_LINK_ON;
+     tmp = PHY_LINK_ON;
 #elif   _WIZCHIP_ == W5200
    if(getPHYSTATUS() & PHYSTATUS_LINK)
       tmp = PHY_LINK_ON;
@@ -653,10 +653,10 @@ int8_t wizphy_getphypmode(void)
 #if _WIZCHIP_ == W5100S
 void wizphy_reset(void)
 {
-	uint16_t tmp = wiz_mdio_read(PHYMDIO_BMCR);
-	tmp |= BMCR_RESET;
-	wiz_mdio_write(PHYMDIO_BMCR, tmp);
-	while(wiz_mdio_read(PHYMDIO_BMCR)&BMCR_RESET){}
+  uint16_t tmp = wiz_mdio_read(PHYMDIO_BMCR);
+  tmp |= BMCR_RESET;
+  wiz_mdio_write(PHYMDIO_BMCR, tmp);
+  while(wiz_mdio_read(PHYMDIO_BMCR)&BMCR_RESET){}
 }
 
 void wizphy_setphyconf(wiz_PhyConf* phyconf)
@@ -666,22 +666,22 @@ void wizphy_setphyconf(wiz_PhyConf* phyconf)
       tmp |= BMCR_AUTONEGO;
    else
    {
-	  tmp &= ~BMCR_AUTONEGO;
+    tmp &= ~BMCR_AUTONEGO;
       if(phyconf->duplex == PHY_DUPLEX_FULL)
       {
-    	  tmp |= BMCR_DUP;
+        tmp |= BMCR_DUP;
       }
       else
       {
-    	  tmp &= ~BMCR_DUP;
+        tmp &= ~BMCR_DUP;
       }
       if(phyconf->speed == PHY_SPEED_100)
       {
-    	  tmp |= BMCR_SPEED;
+        tmp |= BMCR_SPEED;
       }
       else
       {
-    	  tmp &= ~BMCR_SPEED;
+        tmp &= ~BMCR_SPEED;
       }
    }
    wiz_mdio_write(PHYMDIO_BMCR, tmp);
@@ -694,15 +694,15 @@ void wizphy_getphyconf(wiz_PhyConf* phyconf)
    phyconf->by   = PHY_CONFBY_SW;
    if(tmp & BMCR_AUTONEGO)
    {
-	   phyconf->mode = PHY_MODE_AUTONEGO;
+     phyconf->mode = PHY_MODE_AUTONEGO;
    }
    else
    {
-	   phyconf->mode = PHY_MODE_MANUAL;
-	   if(tmp&BMCR_DUP) phyconf->duplex = PHY_DUPLEX_FULL;
-	   else phyconf->duplex = PHY_DUPLEX_HALF;
-	   if(tmp&BMCR_SPEED) phyconf->speed = PHY_SPEED_100;
-	   else phyconf->speed = PHY_SPEED_10;
+     phyconf->mode = PHY_MODE_MANUAL;
+     if(tmp&BMCR_DUP) phyconf->duplex = PHY_DUPLEX_FULL;
+     else phyconf->duplex = PHY_DUPLEX_HALF;
+     if(tmp&BMCR_SPEED) phyconf->speed = PHY_SPEED_100;
+     else phyconf->speed = PHY_SPEED_10;
    }
 }
 
@@ -716,7 +716,7 @@ int8_t wizphy_setphypmode(uint8_t pmode)
    }
    else
    {
-	   tmp &= ~BMCR_PWDN;
+     tmp &= ~BMCR_PWDN;
    }
    wiz_mdio_write(PHYMDIO_BMCR, tmp);
    tmp = wiz_mdio_read(PHYMDIO_BMCR);

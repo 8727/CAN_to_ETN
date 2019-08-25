@@ -14,6 +14,7 @@
 #define DEBUG_CAN
 #define DEBUG_RS485
 #define DEBUG_NRF24
+#define ETHERNET
 
 /* Define --------------------------------------------------------------------*/
 #define true    0x01

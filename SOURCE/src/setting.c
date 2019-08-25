@@ -1,5 +1,6 @@
 #include "setting.h"
 
+extern wiz_NetInfo defNet;
 struct settingsInitTypeDef settings;
 static __IO uint32_t msTicks;
 
@@ -89,22 +90,19 @@ void ReadConfig(void){
     buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
     buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
     buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
-    buffEeprom[ADDR_W5500_IP] = w5500.ip[0x00];
-    buffEeprom[ADDR_W5500_IP] = w5500.ip[0x01];
-    buffEeprom[ADDR_W5500_IP] = w5500.ip[0x02];
-    buffEeprom[ADDR_W5500_IP] = w5500.ip[0x03];
-    buffEeprom[ADDR_W5500_NS] = w5500.sn[0x00];
-    buffEeprom[ADDR_W5500_NS] = w5500.sn[0x01];
-    buffEeprom[ADDR_W5500_NS] = w5500.sn[0x02];
-    buffEeprom[ADDR_W5500_NS] = w5500.sn[0x03];
-    buffEeprom[ADDR_W5500_GW] = w5500.gw[0x00];
-    buffEeprom[ADDR_W5500_GW] = w5500.gw[0x01];
-    buffEeprom[ADDR_W5500_GW] = w5500.gw[0x02];
-    buffEeprom[ADDR_W5500_GW] = w5500.gw[0x03];
-    buffEeprom[ADDR_W5500_DNS1] = w5500.dns[0x00];
-    buffEeprom[ADDR_W5500_DNS1] = w5500.dns[0x01];
-    buffEeprom[ADDR_W5500_DNS1] = w5500.dns[0x02];
-    buffEeprom[ADDR_W5500_DNS1] = w5500.dns[0x03];
+    buffEeprom[ADDR_W5500_IP] = defNet.ip[0x00];
+    buffEeprom[ADDR_W5500_IP] = defNet.ip[0x01];
+    buffEeprom[ADDR_W5500_IP] = defNet.ip[0x02];
+    buffEeprom[ADDR_W5500_IP] = defNet.ip[0x03];
+    buffEeprom[ADDR_W5500_NS] = defNet.sn[0x00];
+    buffEeprom[ADDR_W5500_NS] = defNet.sn[0x01];
+    buffEeprom[ADDR_W5500_NS] = defNet.sn[0x02];
+    buffEeprom[ADDR_W5500_NS] = defNet.sn[0x03];
+    buffEeprom[ADDR_W5500_GW] = defNet.gw[0x00];
+    buffEeprom[ADDR_W5500_GW] = defNet.gw[0x01];
+    buffEeprom[ADDR_W5500_GW] = defNet.gw[0x02];
+    buffEeprom[ADDR_W5500_GW] = defNet.gw[0x03];
+
 /*----------------------------------------------------------------------------*/
     Ee24cxxWrite(buffEeprom);
     
@@ -137,22 +135,19 @@ void ReadConfig(void){
   settings.rf24TypeSend4 = buffEeprom[ADDR_RF24_TYPE_SEND_4];
   settings.rf24TypeAddr4 = buffEeprom[ADDR_RF24_TYPE_ADDR_4];
 /*----------------------------------------------------------------------------*/
-  w5500.ip[0x00] = buffEeprom[ADDR_W5500_IP];
-  w5500.ip[0x01] = buffEeprom[ADDR_W5500_IP];
-  w5500.ip[0x02] = buffEeprom[ADDR_W5500_IP];
-  w5500.ip[0x03] = buffEeprom[ADDR_W5500_IP];
-  w5500.sn[0x00] = buffEeprom[ADDR_W5500_NS];
-  w5500.sn[0x01] = buffEeprom[ADDR_W5500_NS];
-  w5500.sn[0x02] = buffEeprom[ADDR_W5500_NS];
-  w5500.sn[0x03] = buffEeprom[ADDR_W5500_NS];
-  w5500.gw[0x00] = buffEeprom[ADDR_W5500_GW];
-  w5500.gw[0x01] = buffEeprom[ADDR_W5500_GW];
-  w5500.gw[0x02] = buffEeprom[ADDR_W5500_GW];
-  w5500.gw[0x03] = buffEeprom[ADDR_W5500_GW];
-  w5500.dns[0x00] = buffEeprom[ADDR_W5500_DNS1];
-  w5500.dns[0x01] = buffEeprom[ADDR_W5500_DNS1];
-  w5500.dns[0x02] = buffEeprom[ADDR_W5500_DNS1];
-  w5500.dns[0x03] = buffEeprom[ADDR_W5500_DNS1];
+  defNet.ip[0x00] = buffEeprom[ADDR_W5500_IP];
+  defNet.ip[0x01] = buffEeprom[ADDR_W5500_IP];
+  defNet.ip[0x02] = buffEeprom[ADDR_W5500_IP];
+  defNet.ip[0x03] = buffEeprom[ADDR_W5500_IP];
+  defNet.sn[0x00] = buffEeprom[ADDR_W5500_NS];
+  defNet.sn[0x01] = buffEeprom[ADDR_W5500_NS];
+  defNet.sn[0x02] = buffEeprom[ADDR_W5500_NS];
+  defNet.sn[0x03] = buffEeprom[ADDR_W5500_NS];
+  defNet.gw[0x00] = buffEeprom[ADDR_W5500_GW];
+  defNet.gw[0x01] = buffEeprom[ADDR_W5500_GW];
+  defNet.gw[0x02] = buffEeprom[ADDR_W5500_GW];
+  defNet.gw[0x03] = buffEeprom[ADDR_W5500_GW];
+
   
   
   
@@ -198,7 +193,7 @@ void Setting(void){
   CanInit();
   Rs485Init();
   Nrf24Init();
-  W5500Init();
+  EthernetInit();
   #if defined DEBUG_SETTING
     printf("\t\tStop setting\n\r\n");
   #endif

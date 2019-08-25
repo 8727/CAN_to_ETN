@@ -413,14 +413,14 @@
               <FilePath>..\SOURCE\src\main.c</FilePath>
             </File>
             <File>
+              <FileName>ee24cxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\ee24cxx.c</FilePath>
+            </File>
+            <File>
               <FileName>setting.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\setting.c</FilePath>
-            </File>
-            <File>
-              <FileName>Ee24cxx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\Ee24cxx.c</FilePath>
             </File>
             <File>
               <FileName>rtc.c</FileName>
@@ -443,9 +443,34 @@
               <FilePath>..\SOURCE\src\nrf24.c</FilePath>
             </File>
             <File>
+              <FileName>ethernet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\ethernet.c</FilePath>
+            </File>
+            <File>
+              <FileName>wizchip_conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\w5500\wizchip_conf.c</FilePath>
+            </File>
+            <File>
               <FileName>w5500.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\w5500.c</FilePath>
+              <FilePath>..\SOURCE\src\w5500\w5500.c</FilePath>
+            </File>
+            <File>
+              <FileName>socket.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\w5500\socket.c</FilePath>
+            </File>
+            <File>
+              <FileName>dhcp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\w5500\dhcp.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\w5500\sntp.c</FilePath>
             </File>
           </Files>
         </Group>
