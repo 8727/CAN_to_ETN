@@ -91,7 +91,8 @@ void ReadConfig(void){
     WriteData32ToBuffer(ADDR_W5500_NS, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_GW, ReadData32Buffer(0x00, (uint8_t*)IP_GATE), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_SEND, ReadData32Buffer(0x00, (uint8_t*)IP_SEND), buffEeprom);
-    WriteData32ToBuffer(ADDR_W5500_NTP, ReadData32Buffer(0x00, (uint8_t*)IP_NTP), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_NTP_P, ReadData32Buffer(0x00, (uint8_t*)IP_NTP_P), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_NTP_S, ReadData32Buffer(0x00, (uint8_t*)IP_NTP_S), buffEeprom);
 
 
 /*----------------------------------------------------------------------------*/
@@ -139,10 +140,10 @@ void ReadConfig(void){
 }
 
 
-void EXTI15_10_IRQHandler(void){
-  if((EXTI->PR & EXTI_PR_PR13) == EXTI_PR_PR13){ // Прерывание от EXTI13 //PD13
+void EXTI9_5_IRQHandler(void){
+  if((EXTI->PR & EXTI_PR_PR5) == EXTI_PR_PR5){ // Прерывание от EXTI5 //PB5
     Nrf24CheckRadio();
-    EXTI->PR |= EXTI_PR_PR13; // Сбросить флаг EXTI13
+    EXTI->PR |= EXTI_PR_PR5; // Сбросить флаг EXTI5
   }
   
   

@@ -139,9 +139,9 @@ void Nrf24CheckRadio(void){ //PD13
 void Nrf24Init(void){// Производим первоначальную настройку устройства.
   uint8_t i = 0x32;
   uint8_t buff[0x04];
-  GPIOB->CRH &= ~(GPIO_CRH_CNF11 | GPIO_CRH_CNF12 | GPIO_CRH_CNF13 | GPIO_CRH_CNF15);
+  GPIOB->CRH &= ~(GPIO_CRH_CNF8 | GPIO_CRH_CNF12 | GPIO_CRH_CNF13 | GPIO_CRH_CNF15);
   GPIOB->CRH |= GPIO_CRH_CNF13_1 | GPIO_CRH_CNF15_1;
-  GPIOB->CRH |= GPIO_CRH_MODE11 | GPIO_CRH_MODE12 | GPIO_CRH_MODE13 | GPIO_CRH_MODE15;
+  GPIOB->CRH |= GPIO_CRH_MODE8 | GPIO_CRH_MODE12 | GPIO_CRH_MODE13 | GPIO_CRH_MODE15;
   
   RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
   SPI2->CR1 &= ~SPI_CR1_BR; // 40MHz
@@ -182,17 +182,17 @@ void Nrf24Init(void){// Производим первоначальную нас
       Nrf24WriteReg(NRF24_FEATURE, NRF24_EN_DPL); // разрешение произвольной длины пакета данных
       Nrf24WriteReg(NRF24_CONFIG, NRF24_EN_CRC | NRF24_CRCO | NRF24_PWR_UP | NRF24_PRIM_RX); // Включение питания
       
-      GPIOD->CRH &= ~GPIO_CRH_CNF13_0;
-      GPIOD->CRH |= GPIO_CRH_CNF13_1;
-      GPIOD->CRH &= ~GPIO_CRH_MODE13;
-      GPIOD->BSRR |= GPIO_BSRR_BS13;
+      GPIOB->CRL &= ~GPIO_CRL_CNF5_0;
+      GPIOB->CRL |= GPIO_CRL_CNF5_1;
+      GPIOB->CRL &= ~GPIO_CRL_MODE5;
+      GPIOB->BSRR |= GPIO_BSRR_BS5;
       
-      AFIO->EXTICR[0X03] |= AFIO_EXTICR4_EXTI13_PD;
-      EXTI->FTSR |= EXTI_FTSR_TR13;
-      EXTI->PR |= EXTI_PR_PR13;
-      EXTI->IMR |= EXTI_IMR_MR13;
-      NVIC_SetPriority(EXTI15_10_IRQn, PRIORITY_RF24);
-      NVIC_EnableIRQ(EXTI15_10_IRQn);
+      AFIO->EXTICR[0X01] |= AFIO_EXTICR2_EXTI5_PB;
+      EXTI->FTSR |= EXTI_FTSR_TR5;
+      EXTI->PR |= EXTI_PR_PR5;
+      EXTI->IMR |= EXTI_IMR_MR5;
+      NVIC_SetPriority(EXTI9_5_IRQn, PRIORITY_RF24);
+      NVIC_EnableIRQ(EXTI9_5_IRQn);
       i=00;
     }
   }while(i--);// Если прочитано не то что записано, то значит либо радио-чип ещё инициализируется, либо не работает.

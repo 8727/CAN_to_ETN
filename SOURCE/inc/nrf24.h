@@ -6,8 +6,8 @@
 #include "setting.h"
 
 /* Define --------------------------------------------------------------------*/
-#define NRF24_CE_LOW                  GPIOB->BSRR = GPIO_BSRR_BR11
-#define NRF24_CE_HIGHT                GPIOB->BSRR = GPIO_BSRR_BS11
+#define NRF24_CE_LOW                  GPIOB->BSRR = GPIO_BSRR_BR8
+#define NRF24_CE_HIGHT                GPIOB->BSRR = GPIO_BSRR_BS8
 
 #define NRF24_CS_LOW                  GPIOB->BSRR = GPIO_BSRR_BR12
 #define NRF24_CS_HIGHT                GPIOB->BSRR = GPIO_BSRR_BS12

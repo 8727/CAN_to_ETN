@@ -35,7 +35,8 @@ static const uint8_t IP_ADDR[] =         {10, 0, 0, 253};
 static const uint8_t IP_MASK[] =         {255, 255, 255, 0};
 static const uint8_t IP_GATE[] =         {10, 0, 0, 254};
 static const uint8_t IP_SEND[] =         {10, 0, 0, 252};
-static const uint8_t IP_NTP[] =          {89, 109, 251, 21};
+static const uint8_t IP_NTP_P[] =        {89, 109, 251, 21};
+static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 
 //#define HEATING_MAX_DEVICES              0x05
 //#define DS18B20_MAX_DEVICES              0x08
@@ -112,7 +113,8 @@ static const uint8_t IP_NTP[] =          {89, 109, 251, 21};
 #define ADDR_W5500_NS                    0x3C // 0x3C-0x3F
 #define ADDR_W5500_GW                    0x40 // 0x40-0x43
 #define ADDR_W5500_SEND                  0x44 // 0x44-0x47
-#define ADDR_W5500_NTP                   0x48 // 0x48-0x4B
+#define ADDR_W5500_NTP_P                 0x48 // 0x48-0x4B
+#define ADDR_W5500_NTP_S                 0x4C // 0x48-0x4F
 
 /* Define --------------------------------------------------------------------*/
 #define PRIORITY_RTC                     0x0E
