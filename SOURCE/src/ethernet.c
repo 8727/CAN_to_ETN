@@ -8,14 +8,6 @@ void EthernetCsLow(void){ ETHERNET_CS_LOW; }
 
 void EthernetCsHight(void){ ETHERNET_CS_HIGHT; }
 
-void EthernetReadBuff(uint8_t* buff, uint16_t len){
-//  HAL_SPI_Receive(&hspi1, buff, len, HAL_MAX_DELAY);
-}
-
-void EthernetWriteBuff(uint8_t* buff, uint16_t len){
-//  HAL_SPI_Transmit(&hspi1, buff, len, HAL_MAX_DELAY);
-}
-
 uint8_t EthernetReadByte(void){
   while(!(SPI1->SR & SPI_SR_TXE));
   SPI1->DR = 0xFF;
@@ -27,14 +19,30 @@ void EthernetWriteByte(uint8_t byte){
   while(!(SPI1->SR & SPI_SR_TXE));
   SPI1->DR = 0xFF;
   while(!(SPI1->SR & SPI_SR_RXNE));
+ (void) SPI1->DR;
 }
 
-//uint8_t EthernetWriteRead(uint8_t byte){
-//  while(!(SPI1->SR & SPI_SR_TXE));
-//  SPI1->DR = byte;
-//  while(!(SPI1->SR & SPI_SR_RXNE));
-//  return SPI1->DR;
-//}
+void EthernetReadBuff(uint8_t* buff, uint16_t len){
+  uint16_t i = 0x00;
+  while(len--){
+//    while(!(SPI1->SR & SPI_SR_TXE));
+//    SPI1->DR = 0xFF;
+//    while(!(SPI1->SR & SPI_SR_RXNE));
+//    buff[i++] = SPI1->DR;
+    buff[i++] = EthernetReadByte();
+  }
+}
+
+void EthernetWriteBuff(uint8_t* buff, uint16_t len){
+  uint16_t i = 0x00;
+  while(len--){
+//    while(!(SPI1->SR & SPI_SR_TXE));
+//    SPI1->DR = buff[i++];
+//    while(!(SPI1->SR & SPI_SR_RXNE));
+//   (void) SPI1->DR;
+    EthernetWriteByte(buff[i++]);
+  }
+}
 
 void EthernetNetwork(void){
   uint8_t tmpstr[6] = {0,};

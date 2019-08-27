@@ -15,6 +15,7 @@
 #define DEBUG_RS485
 #define DEBUG_NRF24
 #define ETHERNET
+#define SNTP
 
 /* Define --------------------------------------------------------------------*/
 #define true    0x01

@@ -1,5 +1,48 @@
 #include "rtc.h"
 
+/*
+01) [UTC - 12]    Baker Island Time
+02) [UTC - 11]    Niue Time, Samoa Standard Time
+03) [UTC - 10]    Hawaii-Aleutian Standard Time, Cook Island Time
+04) [UTC - 9:30]  Marquesas Islands Time
+05) [UTC - 9]     Alaska Standard Time, Gambier Island Time
+06) [UTC - 8]     Pacific Standard Time
+07) [UTC - 7]     Mountain Standard Time
+08) [UTC - 6]     Central Standard Time
+09) [UTC - 5]     Eastern Standard Time
+10) [UTC - 4:30]  Venezuelan Standard Time
+11) [UTC - 4]     Atlantic Standard Time
+12) [UTC - 3:30]  Newfoundland Standard Time
+13) [UTC - 3]     Amazon Standard Time, Central Greenland Time
+14) [UTC - 2]     Fernando de Noronha Time, South Georgia &amp; the South Sandwich Islands Time
+15) [UTC - 1]     Azores Standard Time, Cape Verde Time, Eastern Greenland Time
+16) [UTC]         Western European Time, Greenwich Mean Time
+17) [UTC + 1]     Central European Time, West African Time
+18) [UTC + 2]     Eastern European Time, Central African Time
+19) [UTC + 3]     Moscow Standard Time, Eastern African Time
+20) [UTC + 3:30]  Iran Standard Time
+21) [UTC + 4]     Gulf Standard Time, Samara Standard Time
+22) [UTC + 4:30]  Afghanistan Time
+23) [UTC + 5]     Pakistan Standard Time, Yekaterinburg Standard Time
+24) [UTC + 5:30]  Indian Standard Time, Sri Lanka Time
+25) [UTC + 5:45]  Nepal Time
+26) [UTC + 6]     Bangladesh Time, Bhutan Time, Novosibirsk Standard Time
+27) [UTC + 6:30]  Cocos Islands Time, Myanmar Time
+28) [UTC + 7]     Indochina Time, Krasnoyarsk Standard Time
+290 [UTC + 8]     Chinese Standard Time, Australian Western Standard Time, Irkutsk Standard Time
+30) [UTC + 8:45]  Southeastern Western Australia Standard Time
+31) [UTC + 9]     Japan Standard Time, Korea Standard Time, Chita Standard Time
+32) [UTC + 9:30]  Australian Central Standard Time
+33) [UTC + 10]    Australian Eastern Standard Time, Vladivostok Standard Time
+34) [UTC + 10:30] Lord Howe Standard Time
+34) [UTC + 11]    Solomon Island Time, Magadan Standard Time
+36) [UTC + 11:30] Norfolk Island Time
+37) [UTC + 12]    New Zealand Time, Fiji Time, Kamchatka Standard Time
+38) [UTC + 12:45] Chatham Islands Time
+39) [UTC + 13]    Tonga Time, Phoenix Islands Time
+40) [UTC + 14]    Line Island Time
+*/
+
 void RTC_IRQHandler(void){
   if(RTC->CRL & RTC_CRL_SECF){
     RTC->CRL &= ~RTC_CRL_SECF;
@@ -12,6 +55,19 @@ void RTC_IRQHandler(void){
   }
 }
 
+uint16_t RtcTimeZoneToSeconds(uint8_t time_zone){
+  uint16_t seconds;
+  seconds = ZONE_SEC[time_zone - 0x01];
+  return seconds;
+}
+
+uint32_t RtcTimeZoneAdjustment(uint32_t time, uint8_t time_zone){
+  uint16_t adjustment;
+  adjustment = RtcTimeZoneToSeconds(time_zone);
+  if(0x10 > time_zone){ time -= adjustment; }else{ time += adjustment; }
+  return time;
+}
+ 
 void RtcTimeStamp(void){
   RtcTypeDef date;
   RtcSecondsToTime(RtcGetSeconds(), &date);
