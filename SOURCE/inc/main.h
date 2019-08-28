@@ -16,6 +16,7 @@
 #define DEBUG_NRF24
 #define ETHERNET
 #define SNTP
+#define DHCP
 
 /* Define --------------------------------------------------------------------*/
 #define true    0x01
