@@ -134,6 +134,7 @@ void ReadConfig(void){
   for(i = 0x00; i < 0x04; i++){ gWIZNETINFO.gw[i] = buffEeprom[ADDR_W5500_GW + i];} // GW адрес
   gWIZNETINFO.dhcp = NETINFO_DHCP;
   
+  for(i = 0x00; i < 0x04; i++){ settings.sntp[i] = buffEeprom[ADDR_W5500_NTP_P + i];} // SNTP адрес
 /*----------------------------------------------------------------------------*/
   
 }

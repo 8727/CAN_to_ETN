@@ -1,7 +1,7 @@
 #include "ethernet.h"
 
 wiz_NetInfo gWIZNETINFO;
-uint8_t gDATABUF[DATA_BUF_SIZE];
+uint8_t dhcpBuff[DATA_BUF_SIZE];
 uint8_t my_dhcp_retry = 0x00;
 
 void EthernetCsLOW(void){ ETHERNET_CS_LOW; }
@@ -23,6 +23,7 @@ void EthernetWriteByte(uint8_t byte){
 }
 
 void EthernetInfo(void){
+  settings.lan = 0x01;
   #ifdef DEBUG_ETHERNET
     uint8_t tmpstr[0x06] = {0,};
     wiz_NetInfo info;
@@ -119,12 +120,13 @@ void EthernetSettings(void){
     }
   }while(temp == PHY_LINK_OFF);
   setSHAR(gWIZNETINFO.mac); //настройка MAC
-  DHCP_init(SOCK_DHCP, gDATABUF);//передаем номер сокета  
+  DHCP_init(W5500_SOCK_DHCP, dhcpBuff);//передаем номер сокета  
   reg_dhcp_cbfunc(my_ip_assign, my_ip_assign, my_ip_conflict);//передаем функции
   
   #if defined DEBUG_ETHERNET
     printf("< OK >    Initialization ethernet\r\n");
   #endif
+
 }
 
 void EthernetInit(void){

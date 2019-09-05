@@ -129,14 +129,13 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 
 #define DATA_BUF_SIZE                    2048
 #define MY_MAX_DHCP_RETRY                0x0A
-#define SOCK_DHCP                        7
-//#define W5500_SOCK_DHCP                  0x07
-//#define  W5500_SOCK_SNTP                 0x06
-////#define  W5500_SOCK_HTTP                 0x05
-////#define  W5500_SOCK_SNTP                 0x04
-////#define  W5500_SOCK_SNTP                 0x03
-////#define  W5500_SOCK_SNTP                 0x02
-////#define  W5500_SOCK_SNTP                 0x01
+#define W5500_SOCK_DHCP                  0x07
+#define  W5500_SOCK_SNTP                 0x06
+//#define  W5500_SOCK_HTTP                 0x05
+//#define  W5500_SOCK_SNTP                 0x04
+//#define  W5500_SOCK_SNTP                 0x03
+//#define  W5500_SOCK_SNTP                 0x02
+//#define  W5500_SOCK_SNTP                 0x01
 //#define  W5500_SOCK_HTTP                 0x00
 //#define  W5500_DATA_BUF_SIZE             2048
 
@@ -149,7 +148,7 @@ struct settingsInitTypeDef{
   uint32_t canSpeed;
   uint16_t rs485Speed;
   uint8_t  rotation;
-  int8_t   timeZone;
+  uint8_t  timeZone;
   uint16_t canDevice;
   
   
@@ -173,9 +172,9 @@ struct settingsInitTypeDef{
   uint8_t  rf24TypeSend4;
   uint8_t  rf24TypeAddr4;
   // W5500
-  _Bool  dhcpOn;
-  uint8_t  dhcpSt;
-  
+  uint8_t  lan;
+  uint8_t  dhcpOnSt;
+  uint8_t  sntp[0x04];
   
   
 };

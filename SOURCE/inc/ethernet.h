@@ -6,6 +6,7 @@
 #include "setting.h"
 #include "wizchip_conf.h"
 #include "dhcp.h"
+#include "sntp.h"
 
 /* Define --------------------------------------------------------------------*/
 #define ETHERNET_CS_LOW                GPIOA->BSRR = GPIO_BSRR_BR4

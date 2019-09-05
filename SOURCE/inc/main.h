@@ -15,7 +15,7 @@
 #define DEBUG_RS485
 #define DEBUG_NRF24
 #define DEBUG_ETHERNET
-//#define SNTP
+#define DEBUG_SNTP
 //#define DHCP
 
 /* Define --------------------------------------------------------------------*/
