@@ -48,10 +48,10 @@ void RTC_IRQHandler(void){
     RTC->CRL &= ~RTC_CRL_SECF;
     
     #if defined DEBUG_RTC
-      RtcTimeStamp();
-      printf("\r\n");
+//      RtcTimeStamp();
+//      printf("\r\n");
     #endif
-    if(0x00 != settings.dhcpOn && 0x00 != settings.dhcpSt) EthernetDhcpRutine();
+//    if(0x00 != settings.dhcpOn && 0x00 == settings.dhcpSt) EthernetDhcpRutine();
   }
 }
 

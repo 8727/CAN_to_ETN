@@ -467,11 +467,6 @@
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\w5500\dhcp.c</FilePath>
             </File>
-            <File>
-              <FileName>sntp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\w5500\sntp.c</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>

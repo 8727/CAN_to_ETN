@@ -1,34 +1,89 @@
+//*****************************************************************************
+//
+//! \file dhcp.h
+//! \brief DHCP APIs Header file.
+//! \details Processig DHCP protocol as DISCOVER, OFFER, REQUEST, ACK, NACK and DECLINE.
+//! \version 1.1.0
+//! \date 2013/11/18
+//! \par  Revision history
+//!       <2013/11/18> 1st Release
+//!       <2012/12/20> V1.1.0
+//!         1. Move unreferenced DEFINE to dhcp.c
+//!       <2012/12/26> V1.1.1
+//! \author Eric Jung & MidnightCow
+//! \copyright
+//!
+//! Copyright (c)  2013, WIZnet Co., LTD.
+//! All rights reserved.
+//! 
+//! Redistribution and use in source and binary forms, with or without 
+//! modification, are permitted provided that the following conditions 
+//! are met: 
+//! 
+//!     * Redistributions of source code must retain the above copyright 
+//! notice, this list of conditions and the following disclaimer. 
+//!     * Redistributions in binary form must reproduce the above copyright
+//! notice, this list of conditions and the following disclaimer in the
+//! documentation and/or other materials provided with the distribution. 
+//!     * Neither the name of the <ORGANIZATION> nor the names of its 
+//! contributors may be used to endorse or promote products derived 
+//! from this software without specific prior written permission. 
+//! 
+//! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+//! AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+//! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+//! ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+//! LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+//! CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+//! SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+//! INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+//! CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+//! ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+//! THE POSSIBILITY OF SUCH DAMAGE.
+//
+//*****************************************************************************
 #ifndef _DHCP_H_
 #define _DHCP_H_
 
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f10x.h"
-#include "setting.h"
-#include "socket.h"
+/*
+ * @brief 
+ * @details If you want to display debug & procssing message, Define _DHCP_DEBUG_ 
+ * @note    If defined, it dependens on <stdio.h>
+ */
+//#define _DHCP_DEBUG_
+
 
 /* Retry to processing DHCP */
-#define MAX_DHCP_RETRY          2       ///< Maximum retry count
-#define DHCP_WAIT_TIME          10      ///< Wait Time 10s
+#define	MAX_DHCP_RETRY          2        ///< Maxium retry count
+#define	DHCP_WAIT_TIME          10       ///< Wait Time 10s
+
 
 /* UDP port numbers for DHCP */
-#define DHCP_SERVER_PORT        67      ///< DHCP server port number
-#define DHCP_CLIENT_PORT        68      ///< DHCP client port number
-#define MAGIC_COOKIE             0x63825363  ///< You should not modify it number.
-#define DCHP_HOST_NAME           "8727.ru\0"
+#define DHCP_SERVER_PORT      	67	      ///< DHCP server port number
+#define DHCP_CLIENT_PORT         68	      ///< DHCP client port number
 
-enum{
-  DHCP_FAILED = 0,  ///< Processing Fail
-  DHCP_RUNNING,     ///< Processing DHCP protocol
-  DHCP_IP_ASSIGN,   ///< First Occupy IP from DHPC server      (if cbfunc == null, act as default default_ip_assign)
-  DHCP_IP_CHANGED,  ///< Change IP address by new ip from DHCP (if cbfunc == null, act as default default_ip_update)
-  DHCP_IP_LEASED,   ///< Stand by 
-  DHCP_STOPPED      ///< Stop processing DHCP protocol
+
+#define MAGIC_COOKIE             0x63825363  ///< Any number. You can be modifyed it any number
+
+#define DCHP_HOST_NAME           "EHT-DATA\0"
+
+/* 
+ * @brief return value of @ref DHCP_run()
+ */
+enum
+{
+   DHCP_FAILED = 0,  ///< Procssing Fail
+   DHCP_RUNNING,     ///< Procssing DHCP proctocol
+   DHCP_IP_ASSIGN,   ///< First Occupy IP from DHPC server      (if cbfunc == null, act as default default_ip_assign)
+   DHCP_IP_CHANGED,  ///< Change IP address by new ip from DHCP (if cbfunc == null, act as default default_ip_update)
+   DHCP_IP_LEASED,   ///< Stand by 
+   DHCP_STOPPED      ///< Stop procssing DHCP protocol
 };
 
 /*
  * @brief DHCP client initialization (outside of the main loop)
  * @param s   - socket number
- * @param buf - buffer for processing DHCP message
+ * @param buf - buffer for procssing DHCP message
  */
 void DHCP_init(uint8_t s, uint8_t * buf);
 
@@ -42,7 +97,7 @@ void DHCP_time_handler(void);
  * @brief Register call back function 
  * @param ip_assign   - callback func when IP is assigned from DHCP server first
  * @param ip_update   - callback func when IP is changed
- * @param ip_conflict - callback func when the assigned IP is conflict with others.
+ * @prarm ip_conflict - callback func when the assigned IP is conflict with others.
  */
 void reg_dhcp_cbfunc(void(*ip_assign)(void), void(*ip_update)(void), void(*ip_conflict)(void));
 
@@ -53,7 +108,7 @@ void reg_dhcp_cbfunc(void(*ip_assign)(void), void(*ip_update)(void), void(*ip_co
  *            @ref DHCP_RUNNING    \n
  *            @ref DHCP_IP_ASSIGN  \n
  *            @ref DHCP_IP_CHANGED \n
- *            @ref DHCP_IP_LEASED  \n
+ * 			  @ref DHCP_IP_LEASED  \n
  *            @ref DHCP_STOPPED    \n
  *
  * @note This function is always called by you main task.
@@ -61,10 +116,10 @@ void reg_dhcp_cbfunc(void(*ip_assign)(void), void(*ip_update)(void), void(*ip_co
 uint8_t DHCP_run(void);
 
 /*
- * @brief Stop DHCP processing
+ * @brief Stop DHCP procssing
  * @note If you want to restart. call DHCP_init() and DHCP_run()
  */ 
-void DHCP_stop(void);
+void    DHCP_stop(void);
 
 /* Get Network information assigned from DHCP server */
 /*
@@ -90,8 +145,8 @@ void getDNSfromDHCP(uint8_t* ip);
 
 /*
  * @brief Get the leased time by DHCP sever
- * @return unit 1s
+ * @retrun unit 1s
  */
 uint32_t getDHCPLeasetime(void);
 
-#endif /* _DHCP_H_ */
+#endif	/* _DHCP_H_ */

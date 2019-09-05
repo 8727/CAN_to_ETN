@@ -1,6 +1,6 @@
 #include "setting.h"
 
-extern wiz_NetInfo defNet;
+extern wiz_NetInfo gWIZNETINFO;
 struct settingsInitTypeDef settings;
 static __IO uint32_t msTicks;
 
@@ -85,8 +85,9 @@ void ReadConfig(void){
     buffEeprom[ADDR_RF24_TYPE_ADDR_4] = 0x00;
     
 /*----------------------------------------------------------------------------*/
-    WriteData32ToBuffer(ADDR_W5500_MAC, IP_MAC, buffEeprom);
-    WriteData16ToBuffer(ADDR_W5500_MAC + 0x04, RF24_ADDR, buffEeprom);
+    
+    WriteData32ToBuffer(ADDR_W5500_MAC +0x02, (IP_MAC & 0xFCFFFFFF), buffEeprom);
+    WriteData16ToBuffer(ADDR_W5500_MAC, RF24_ADDR, buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_IP, ReadData32Buffer(0x00, (uint8_t*)IP_ADDR), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_NS, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_GW, ReadData32Buffer(0x00, (uint8_t*)IP_GATE), buffEeprom);
@@ -127,28 +128,26 @@ void ReadConfig(void){
   settings.rf24TypeSend4 = buffEeprom[ADDR_RF24_TYPE_SEND_4];
   settings.rf24TypeAddr4 = buffEeprom[ADDR_RF24_TYPE_ADDR_4];
 /*----------------------------------------------------------------------------*/
-  for(i = 0x00; i < 0x06; i++){ defNet.mac[0x05 - i] = buffEeprom[ADDR_W5500_MAC + i];} // MAC адрес
-  for(i = 0x00; i < 0x04; i++){ defNet.ip[0x03 - i] = buffEeprom[ADDR_W5500_IP + i];} // IP адрес
-  for(i = 0x00; i < 0x04; i++){ defNet.sn[0x03 - i] = buffEeprom[ADDR_W5500_NS + i];} // SN адрес
-  for(i = 0x00; i < 0x04; i++){ defNet.gw[0x03 - i] = buffEeprom[ADDR_W5500_GW + i];} // GW адрес
-  
-  
-  
+  for(i = 0x00; i < 0x06; i++){ gWIZNETINFO.mac[0x05 - i] = buffEeprom[ADDR_W5500_MAC + i];} // MAC адрес
+  for(i = 0x00; i < 0x04; i++){ gWIZNETINFO.ip[i] = buffEeprom[ADDR_W5500_IP + i];} // IP адрес
+  for(i = 0x00; i < 0x04; i++){ gWIZNETINFO.sn[i] = buffEeprom[ADDR_W5500_NS + i];} // SN адрес
+  for(i = 0x00; i < 0x04; i++){ gWIZNETINFO.gw[i] = buffEeprom[ADDR_W5500_GW + i];} // GW адрес
+  gWIZNETINFO.dhcp = NETINFO_DHCP;
   
 /*----------------------------------------------------------------------------*/
   
 }
 
 
-void EXTI9_5_IRQHandler(void){
-  if((EXTI->PR & EXTI_PR_PR5) == EXTI_PR_PR5){ // Прерывание от EXTI5 //PB5
-    Nrf24CheckRadio();
-    EXTI->PR |= EXTI_PR_PR5; // Сбросить флаг EXTI5
-  }
+//void EXTI9_5_IRQHandler(void){
+//  if((EXTI->PR & EXTI_PR_PR5) == EXTI_PR_PR5){ // Прерывание от EXTI5 //PB5
+////    Nrf24CheckRadio();
+//    EXTI->PR |= EXTI_PR_PR5; // Сбросить флаг EXTI5
+//  }
   
   
   
-}
+//}
 
 void Setting(void){
   #if defined DEBUG_SETTING
@@ -166,8 +165,8 @@ void Setting(void){
   RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
-//  RCC->APB2ENR |= RCC_APB2ENR_IOPDEN;
-//  RCC->APB2ENR |= RCC_APB2ENR_IOPEEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPDEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPEEN;
 
   
   Ee24cxxInit();
@@ -177,6 +176,7 @@ void Setting(void){
   Rs485Init();
   Nrf24Init();
   EthernetInit();
+  EthernetSettings();
   #if defined DEBUG_SETTING
     printf("\t\tStop setting\n\r\n");
   #endif

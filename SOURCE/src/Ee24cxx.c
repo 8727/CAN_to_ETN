@@ -5,29 +5,29 @@ void Ee24cxxRead(uint8_t* data){
   uint8_t len = EEPROM_BUFF;
   I2C1->CR1 |= I2C_CR1_ACK;
   I2C1->CR1 |= I2C_CR1_START;
-  while (!(I2C1->SR1 & I2C_SR1_SB)){}
-  (void) I2C1->SR1;
+  while(!(I2C1->SR1 & I2C_SR1_SB)){}
+  (void)I2C1->SR1;
   I2C1->DR = 0xA0;
-  while (!(I2C1->SR1 & I2C_SR1_ADDR)){}
-  (void) I2C1->SR1;
-  (void) I2C1->SR2;
+  while(!(I2C1->SR1 & I2C_SR1_ADDR)){}
+  (void)I2C1->SR1;
+  (void)I2C1->SR2;
   I2C1->DR = 0x00;
-  while (!(I2C1->SR1 & I2C_SR1_TXE)){}
+  while(!(I2C1->SR1 & I2C_SR1_TXE)){}
   I2C1->CR1 |= I2C_CR1_START;
-  while (!(I2C1->SR1 & I2C_SR1_SB)){}
-  (void) I2C1->SR1;
+  while(!(I2C1->SR1 & I2C_SR1_SB)){}
+  (void)I2C1->SR1;
   I2C1->DR = 0xA1;
-  while (!(I2C1->SR1 & I2C_SR1_ADDR)){}
-  (void) I2C1->SR1;
-  (void) I2C1->SR2;
+  while(!(I2C1->SR1 & I2C_SR1_ADDR)){}
+  (void)I2C1->SR1;
+  (void)I2C1->SR2;
   if (0x01 < len){
     len--;
     while(len--){
-      while (!(I2C1->SR1 & I2C_SR1_RXNE)){}
+      while(!(I2C1->SR1 & I2C_SR1_RXNE)){}
       data[i++] = I2C1->DR;
     }
   }
-  while (!(I2C1->SR1 & I2C_SR1_BTF)){}
+  while(!(I2C1->SR1 & I2C_SR1_BTF)){}
   I2C1->CR1 &= ~I2C_CR1_ACK;
   data[i++] = I2C1->DR;
   I2C1->CR1 |= I2C_CR1_STOP;
@@ -39,18 +39,18 @@ void Ee24cxxWrite(uint8_t* data){
     uint8_t len = 0x08;
     //I2C1->CR1 |= I2C_CR1_ACK;
     I2C1->CR1 |= I2C_CR1_START;
-    while (!(I2C1->SR1 & I2C_SR1_SB)){}
-    (void) I2C1->SR1;
+    while(!(I2C1->SR1 & I2C_SR1_SB)){}
+    (void)I2C1->SR1;
     I2C1->DR = 0xA0;
-    while (!(I2C1->SR1 & I2C_SR1_ADDR)){}
-    (void) I2C1->SR1;
-    (void) I2C1->SR2;
+    while(!(I2C1->SR1 & I2C_SR1_ADDR)){}
+    (void)I2C1->SR1;
+    (void)I2C1->SR2;
     I2C1->DR = i;
-    while (len--){
+    while(len--){
       while (!(I2C1->SR1 & I2C_SR1_TXE)){}
       I2C1->DR = data[i++];
     }
-    while (!(I2C1->SR1 & I2C_SR1_BTF)){}
+    while(!(I2C1->SR1 & I2C_SR1_BTF)){}
     I2C1->CR1 |= I2C_CR1_STOP;
     DelayMs(0x05);
   }

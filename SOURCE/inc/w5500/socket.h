@@ -1,37 +1,98 @@
+//*****************************************************************************
+//
+//! \file socket.h
+//! \brief SOCKET APIs Header file.
+//! \details SOCKET APIs like as berkeley socket api. 
+//! \version 1.0.2
+//! \date 2013/10/21
+//! \par  Revision history
+//!       <2015/02/05> Notice
+//!        The version history is not updated after this point.
+//!        Download the latest version directly from GitHub. Please visit the our GitHub repository for ioLibrary.
+//!        >> https://github.com/Wiznet/ioLibrary_Driver
+//!       <2014/05/01> V1.0.2. Refer to M20140501
+//!         1. Modify the comment : SO_REMAINED -> PACK_REMAINED
+//!         2. Add the comment as zero byte udp data reception in getsockopt(). 
+//!       <2013/10/21> 1st Release
+//! \author MidnightCow
+//! \copyright
+//!
+//! Copyright (c)  2013, WIZnet Co., LTD.
+//! All rights reserved.
+//! 
+//! Redistribution and use in source and binary forms, with or without 
+//! modification, are permitted provided that the following conditions 
+//! are met: 
+//! 
+//!     * Redistributions of source code must retain the above copyright 
+//! notice, this list of conditions and the following disclaimer. 
+//!     * Redistributions in binary form must reproduce the above copyright
+//! notice, this list of conditions and the following disclaimer in the
+//! documentation and/or other materials provided with the distribution. 
+//!     * Neither the name of the <ORGANIZATION> nor the names of its 
+//! contributors may be used to endorse or promote products derived 
+//! from this software without specific prior written permission. 
+//! 
+//! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+//! AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+//! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+//! ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+//! LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+//! CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+//! SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+//! INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+//! CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+//! ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+//! THE POSSIBILITY OF SUCH DAMAGE.
+//
+//*****************************************************************************
+/**
+ * @defgroup WIZnet_socket_APIs 1. WIZnet socket APIs
+ * @brief WIZnet socket APIs are based on Berkeley socket APIs,  thus it has much similar name and interface.
+ *        But there is a little bit of difference.
+ * @details
+ * <b> Comparison between WIZnet and Berkeley SOCKET APIs </b>
+ * <table>
+ *    <tr>   <td><b>API</b></td> <td><b>WIZnet</b></td> <td><b>Berkeley</b></td>   </tr>
+ *    <tr>   <td>socket()</td> <td>O</td> <td>O</td>   </tr>
+ *    <tr>   <td><b>bind()</b></td> <td>X</td> <td>O</td>   </tr>
+ *    <tr>   <td><b>listen()</b></td> <td>O</td> <td>O</td>   </tr>
+ *    <tr>   <td><b>connect()</b></td> <td>O</td> <td>O</td>   </tr>
+ *    <tr>   <td><b>accept()</b></td> <td>X</td> <td>O</td>   </tr>
+ *    <tr>   <td><b>recv()</b></td> <td>O</td> <td>O</td>    </tr>
+ *    <tr>   <td><b>send()</b></td> <td>O</td> <td>O</td>   </tr>
+ *    <tr>   <td><b>recvfrom()</b></td> <td>O</td> <td>O</td>   </tr>
+ *    <tr>   <td><b>sendto()</b></td> <td>O</td> <td>O</td>    </tr>
+ *    <tr>   <td><b>closesocket()</b></td> <td>O<br>close() & disconnect()</td> <td>O</td>   </tr>
+ * </table>
+ * There are @b bind() and @b accept() functions in @b Berkeley SOCKET API but,
+ * not in @b WIZnet SOCKET API. Because socket() of WIZnet is not only creating a SOCKET but also binding a local port number,
+ * and listen() of WIZnet is not only listening to connection request from client but also accepting the connection request. \n
+ * When you program "TCP SERVER" with Berkeley SOCKET API, you can use only one listen port.
+ * When the listen SOCKET accepts a connection request from a client, it keeps listening.
+ * After accepting the connection request, a new SOCKET is created and the new SOCKET is used in communication with the client. \n
+ * Following figure shows network flow diagram by Berkeley SOCKET API.
+ * @image html Berkeley_SOCKET.jpg "<Berkeley SOCKET API>"
+ * But, When you program "TCP SERVER" with WIZnet SOCKET API, you can use as many as 8 listen SOCKET with same port number. \n
+ * Because there's no accept() in WIZnet SOCKET APIs, when the listen SOCKET accepts a connection request from a client,
+ * it is changed in order to communicate with the client.
+ * And the changed SOCKET is not listening any more and is dedicated for communicating with the client. \n
+ * If there're many listen SOCKET with same listen port number and a client requests a connection,
+ * the SOCKET which has the smallest SOCKET number accepts the request and is changed as communication SOCKET. \n
+ * Following figure shows network flow diagram by WIZnet SOCKET API.
+ * @image html WIZnet_SOCKET.jpg "<WIZnet SOCKET API>"
+ */
 #ifndef _SOCKET_H_
 #define _SOCKET_H_
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f10x.h"
-#include "stdio.h"
-#include "setting.h"
+
 #include "wizchip_conf.h"
 
-/* Define --------------------------------------------------------------------*/
-#define CHECK_SOCKNUM()   \
-  do{                    \
-    if(sn > _WIZCHIP_SOCK_NUM_) return SOCKERR_SOCKNUM;   \
-  }while(0);             \
-
-#define CHECK_SOCKMODE(mode)  \
-  do{                     \
-    if((getSn_MR(sn) & 0x0F) != mode) return SOCKERR_SOCKMODE;  \
-  }while(0);              \
-
-#define CHECK_SOCKINIT()   \
-  do{                     \
-    if((getSn_SR(sn) != SOCK_INIT)) return SOCKERR_SOCKINIT; \
-  }while(0);              \
-
-#define CHECK_SOCKDATA()   \
-  do{                     \
-    if(len == 0) return SOCKERR_DATALEN;   \
-  }while(0);              \
-  
 #define SOCKET                uint8_t  ///< SOCKET type define for legacy driver
 
 #define SOCK_OK               1        ///< Result is OK about socket process.
 #define SOCK_BUSY             0        ///< Socket is busy on processing the operation. Valid only Non-block IO Mode.
 #define SOCK_FATAL            -1000    ///< Result is fatal error about socket process.
+
 #define SOCK_ERROR            0        
 #define SOCKERR_SOCKNUM       (SOCK_ERROR - 1)     ///< Invalid socket number
 #define SOCKERR_SOCKOPT       (SOCK_ERROR - 2)     ///< Invalid socket option
@@ -46,6 +107,7 @@
 #define SOCKERR_TIMEOUT       (SOCK_ERROR - 13)    ///< Timeout occurred
 #define SOCKERR_DATALEN       (SOCK_ERROR - 14)    ///< Data length is zero or greater than buffer max size.
 #define SOCKERR_BUFFER        (SOCK_ERROR - 15)    ///< Socket buffer is not enough for data communication.
+
 #define SOCKFATAL_PACKLEN     (SOCK_FATAL - 1)     ///< Invalid packet length. Fatal Error.
 
 /*
@@ -57,18 +119,18 @@
 #define SF_MULTI_ENABLE        (Sn_MR_MULTI)       ///< In @ref Sn_MR_UDP, Enable multicast mode.
 
 #if _WIZCHIP_ == 5500
-   #define SF_BROAD_BLOCK      (Sn_MR_BCASTB)      ///< In @ref Sn_MR_UDP or @ref Sn_MR_MACRAW, Block broadcast packet. Valid only in W5500
-   #define SF_MULTI_BLOCK      (Sn_MR_MMB)         ///< In @ref Sn_MR_MACRAW, Block multicast packet. Valid only in W5500
-   #define SF_IPv6_BLOCK       (Sn_MR_MIP6B)       ///< In @ref Sn_MR_MACRAW, Block IPv6 packet. Valid only in W5500
-   #define SF_UNI_BLOCK        (Sn_MR_UCASTB)      ///< In @ref Sn_MR_UDP with \ref SF_MULTI_ENABLE. Valid only in W5500
+   #define SF_BROAD_BLOCK         (Sn_MR_BCASTB)   ///< In @ref Sn_MR_UDP or @ref Sn_MR_MACRAW, Block broadcast packet. Valid only in W5500
+   #define SF_MULTI_BLOCK         (Sn_MR_MMB)      ///< In @ref Sn_MR_MACRAW, Block multicast packet. Valid only in W5500
+   #define SF_IPv6_BLOCK          (Sn_MR_MIP6B)    ///< In @ref Sn_MR_MACRAW, Block IPv6 packet. Valid only in W5500
+   #define SF_UNI_BLOCK           (Sn_MR_UCASTB)   ///< In @ref Sn_MR_UDP with \ref SF_MULTI_ENABLE. Valid only in W5500
 #endif
 
 //A201505 : For W5300
 #if _WIZCHIP_ == 5300
-   #define SF_TCP_ALIGN        0x02                ///< Valid only \ref Sn_MR_TCP and W5300, refer to \ref Sn_MR_ALIGN
+   #define SF_TCP_ALIGN		     0x02			   ///< Valid only \ref Sn_MR_TCP and W5300, refer to \ref Sn_MR_ALIGN
 #endif
 
-#define SF_IO_NONBLOCK         0x01                ///< Socket nonblock io mode. It used parameter in \ref socket().
+#define SF_IO_NONBLOCK           0x01              ///< Socket nonblock io mode. It used parameter in \ref socket().
 
 /*
  * UDP & MACRAW Packet Infomation
@@ -97,7 +159,7 @@
  *                        @ref SOCKERR_SOCKMODE    - Not support socket mode as TCP, UDP, and so on. \n
  *                        @ref SOCKERR_SOCKFLAG    - Invaild socket flag.
  */
-int8_t socket(uint8_t sn, uint8_t protocol, uint16_t port, uint8_t flag);
+int8_t  socket(uint8_t sn, uint8_t protocol, uint16_t port, uint8_t flag);
 
 /**
  * @ingroup WIZnet_socket_APIs
@@ -109,7 +171,7 @@ int8_t socket(uint8_t sn, uint8_t protocol, uint16_t port, uint8_t flag);
  * @return @b Success : @ref SOCK_OK \n
  *         @b Fail    : @ref SOCKERR_SOCKNUM - Invalid socket number
  */
-int8_t close(uint8_t sn);
+int8_t  close(uint8_t sn);
 
 /**
  * @ingroup WIZnet_socket_APIs
@@ -122,7 +184,7 @@ int8_t close(uint8_t sn);
  *         @b Fail    :\n @ref SOCKERR_SOCKINIT   - Socket is not initialized \n
  *                        @ref SOCKERR_SOCKCLOSED - Socket closed unexpectedly.
  */
-int8_t listen(uint8_t sn);
+int8_t  listen(uint8_t sn);
 
 /**
  * @ingroup WIZnet_socket_APIs
@@ -145,7 +207,7 @@ int8_t listen(uint8_t sn);
  *                @ref SOCKERR_TIMEOUT   - Timeout occurred during request connection\n
  *                @ref SOCK_BUSY         - In non-block io mode, it returned immediately\n
  */
-int8_t connect(uint8_t sn, uint8_t * addr, uint16_t port);
+int8_t  connect(uint8_t sn, uint8_t * addr, uint16_t port);
 
 /**
  * @ingroup WIZnet_socket_APIs
@@ -162,7 +224,7 @@ int8_t connect(uint8_t sn, uint8_t * addr, uint16_t port);
  *                        @ref SOCKERR_TIMEOUT  - Timeout occurred \n
  *                        @ref SOCK_BUSY        - Socket is busy.
  */
-int8_t disconnect(uint8_t sn);
+int8_t  disconnect(uint8_t sn);
 
 /**
  * @ingroup WIZnet_socket_APIs
@@ -280,51 +342,55 @@ int32_t recvfrom(uint8_t sn, uint8_t * buf, uint16_t len, uint8_t * addr, uint16
  * @brief The kind of Socket Interrupt.
  * @sa Sn_IR, Sn_IMR, setSn_IR(), getSn_IR(), setSn_IMR(), getSn_IMR()
  */
-typedef enum{
-  SIK_CONNECTED     = (1 << 0),    ///< connected
-  SIK_DISCONNECTED  = (1 << 1),    ///< disconnected
-  SIK_RECEIVED      = (1 << 2),    ///< data received
-  SIK_TIMEOUT       = (1 << 3),    ///< timeout occurred
-  SIK_SENT          = (1 << 4),    ///< send ok
-  //M20150410 : Remove the comma of last member
-  //SIK_ALL           = 0x1F,        ///< all interrupt
-  SIK_ALL           = 0x1F         ///< all interrupt
+typedef enum
+{
+   SIK_CONNECTED     = (1 << 0),    ///< connected
+   SIK_DISCONNECTED  = (1 << 1),    ///< disconnected
+   SIK_RECEIVED      = (1 << 2),    ///< data received
+   SIK_TIMEOUT       = (1 << 3),    ///< timeout occurred
+   SIK_SENT          = (1 << 4),    ///< send ok
+   //M20150410 : Remove the comma of last member
+   //SIK_ALL           = 0x1F,        ///< all interrupt
+   SIK_ALL           = 0x1F         ///< all interrupt
 }sockint_kind;
 
 /**
  * @ingroup DATA_TYPE
  * @brief The type of @ref ctlsocket().
  */
-typedef enum{
-  CS_SET_IOMODE,          ///< set socket IO mode with @ref SOCK_IO_BLOCK or @ref SOCK_IO_NONBLOCK
-  CS_GET_IOMODE,          ///< get socket IO mode
-  CS_GET_MAXTXBUF,        ///< get the size of socket buffer allocated in TX memory
-  CS_GET_MAXRXBUF,        ///< get the size of socket buffer allocated in RX memory
-  CS_CLR_INTERRUPT,       ///< clear the interrupt of socket with @ref sockint_kind
-  CS_GET_INTERRUPT,       ///< get the socket interrupt. refer to @ref sockint_kind
-  #if _WIZCHIP_ > 5100
-    CS_SET_INTMASK,         ///< set the interrupt mask of socket with @ref sockint_kind, Not supported in W5100
-    CS_GET_INTMASK          ///< get the masked interrupt of socket. refer to @ref sockint_kind, Not supported in W5100
-  #endif
+typedef enum
+{
+   CS_SET_IOMODE,          ///< set socket IO mode with @ref SOCK_IO_BLOCK or @ref SOCK_IO_NONBLOCK
+   CS_GET_IOMODE,          ///< get socket IO mode
+   CS_GET_MAXTXBUF,        ///< get the size of socket buffer allocated in TX memory
+   CS_GET_MAXRXBUF,        ///< get the size of socket buffer allocated in RX memory
+   CS_CLR_INTERRUPT,       ///< clear the interrupt of socket with @ref sockint_kind
+   CS_GET_INTERRUPT,       ///< get the socket interrupt. refer to @ref sockint_kind
+#if _WIZCHIP_ > 5100
+   CS_SET_INTMASK,         ///< set the interrupt mask of socket with @ref sockint_kind, Not supported in W5100
+   CS_GET_INTMASK          ///< get the masked interrupt of socket. refer to @ref sockint_kind, Not supported in W5100
+#endif
 }ctlsock_type;
+
 
 /**
  * @ingroup DATA_TYPE
  * @brief The type of socket option in @ref setsockopt() or @ref getsockopt()
  */ 
-typedef enum{
-  SO_FLAG,           ///< Valid only in getsockopt(), For set flag of socket refer to <I>flag</I> in @ref socket().
-  SO_TTL,              ///< Set TTL. @ref Sn_TTL  ( @ref setSn_TTL(), @ref getSn_TTL() )
-  SO_TOS,              ///< Set TOS. @ref Sn_TOS  ( @ref setSn_TOS(), @ref getSn_TOS() )
-  SO_MSS,              ///< Set MSS. @ref Sn_MSSR ( @ref setSn_MSSR(), @ref getSn_MSSR() )
-  SO_DESTIP,           ///< Set the destination IP address. @ref Sn_DIPR ( @ref setSn_DIPR(), @ref getSn_DIPR() )
-  SO_DESTPORT,         ///< Set the destination Port number. @ref Sn_DPORT ( @ref setSn_DPORT(), @ref getSn_DPORT() )
-  #if _WIZCHIP_ != 5100
-    SO_KEEPALIVESEND,    ///< Valid only in setsockopt. Manually send keep-alive packet in TCP mode, Not supported in W5100
-    #if _WIZCHIP_ > 5100   
+typedef enum
+{
+   SO_FLAG,           ///< Valid only in getsockopt(), For set flag of socket refer to <I>flag</I> in @ref socket().
+   SO_TTL,              ///< Set TTL. @ref Sn_TTL  ( @ref setSn_TTL(), @ref getSn_TTL() )
+   SO_TOS,              ///< Set TOS. @ref Sn_TOS  ( @ref setSn_TOS(), @ref getSn_TOS() )
+   SO_MSS,              ///< Set MSS. @ref Sn_MSSR ( @ref setSn_MSSR(), @ref getSn_MSSR() )
+   SO_DESTIP,           ///< Set the destination IP address. @ref Sn_DIPR ( @ref setSn_DIPR(), @ref getSn_DIPR() )
+   SO_DESTPORT,         ///< Set the destination Port number. @ref Sn_DPORT ( @ref setSn_DPORT(), @ref getSn_DPORT() )
+#if _WIZCHIP_ != 5100   
+   SO_KEEPALIVESEND,    ///< Valid only in setsockopt. Manually send keep-alive packet in TCP mode, Not supported in W5100
+   #if _WIZCHIP_ > 5200   
       SO_KEEPALIVEAUTO, ///< Set/Get keep-alive auto transmission timer in TCP mode, Not supported in W5100, W5200
-    #endif      
-  #endif
+   #endif      
+#endif
    SO_SENDBUF,          ///< Valid only in getsockopt. Get the free data size of Socekt TX buffer. @ref Sn_TX_FSR, @ref getSn_TX_FSR()
    SO_RECVBUF,          ///< Valid only in getsockopt. Get the received data size in socket RX buffer. @ref Sn_RX_RSR, @ref getSn_RX_RSR()
    SO_STATUS,           ///< Valid only in getsockopt. Get the socket status. @ref Sn_SR, @ref getSn_SR()
@@ -349,7 +415,7 @@ typedef enum{
  *  @return @b Success @ref SOCK_OK \n
  *          @b fail    @ref SOCKERR_ARG         - Invalid argument\n
  */
-int8_t ctlsocket(uint8_t sn, ctlsock_type cstype, void* arg);
+int8_t  ctlsocket(uint8_t sn, ctlsock_type cstype, void* arg);
 
 /** 
  * @ingroup WIZnet_socket_APIs
@@ -377,7 +443,7 @@ int8_t ctlsocket(uint8_t sn, ctlsock_type cstype, void* arg);
  *  - @ref SOCKERR_SOCKOPT     - Invalid socket option or its value \n
  *  - @ref SOCKERR_TIMEOUT     - Timeout occurred when sending keep-alive packet \n
  */
-int8_t setsockopt(uint8_t sn, sockopt_type sotype, void* arg);
+int8_t  setsockopt(uint8_t sn, sockopt_type sotype, void* arg);
 
 /** 
  * @ingroup WIZnet_socket_APIs
@@ -411,6 +477,6 @@ int8_t setsockopt(uint8_t sn, sockopt_type sotype, void* arg);
  *   When SO_PACKINFO value is PACK_FIRST and the return value of recvfrom() is zero, 
  *   This means the zero byte UDP data(UDP Header only) received.
   */
-int8_t getsockopt(uint8_t sn, sockopt_type sotype, void* arg);
+int8_t  getsockopt(uint8_t sn, sockopt_type sotype, void* arg);
 
 #endif   // _SOCKET_H_

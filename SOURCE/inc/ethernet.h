@@ -4,8 +4,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 #include "setting.h"
+#include "wizchip_conf.h"
 #include "dhcp.h"
-
 
 /* Define --------------------------------------------------------------------*/
 #define ETHERNET_CS_LOW                GPIOA->BSRR = GPIO_BSRR_BR4
@@ -16,9 +16,10 @@
 
 /* Define --------------------------------------------------------------------*/
 
-
-
-void EthernetDhcpRutine(void);
+void dhcp_rutine(void);
+//void EthernetReadBuff(uint16_t addr,uint8_t op, uint8_t* buff, uint16_t len);
+//void EthernetWriteBuff(uint16_t addr,uint8_t op, uint8_t* buff, uint16_t len);
+void EthernetSettings(void);
 void EthernetInit(void);
 
 #endif /* _ETHERNET_H */

@@ -10,5 +10,7 @@ int fputc(int ch, FILE *f){ if(DEMCR & TRCENA){ while(ITM_Port32(0x00) == 0x00);
 int main(void){
   Setting();
   while(0x01){
+    DelayMs(1000);
+    dhcp_rutine();
   }
 }

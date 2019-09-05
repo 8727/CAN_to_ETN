@@ -144,8 +144,8 @@ void Nrf24Init(void){// Производим первоначальную нас
   GPIOB->CRH |= GPIO_CRH_MODE8 | GPIO_CRH_MODE12 | GPIO_CRH_MODE13 | GPIO_CRH_MODE15;
   
   RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
-  SPI2->CR1 &= ~SPI_CR1_BR; // 40MHz
-//  SPI2->CR1 |= SPI_CR1_BR_0; // 10MHz
+//  SPI2->CR1 &= ~SPI_CR1_BR; // 40MHz
+  SPI2->CR1 |= SPI_CR1_BR_0; // 10MHz
   SPI2->CR1 &= ~SPI_CR1_CPOL;
   SPI2->CR1 &= ~SPI_CR1_CPHA;
   SPI2->CR1 &= ~SPI_CR1_DFF;
@@ -187,12 +187,12 @@ void Nrf24Init(void){// Производим первоначальную нас
       GPIOB->CRL &= ~GPIO_CRL_MODE5;
       GPIOB->BSRR |= GPIO_BSRR_BS5;
       
-      AFIO->EXTICR[0X01] |= AFIO_EXTICR2_EXTI5_PB;
-      EXTI->FTSR |= EXTI_FTSR_TR5;
-      EXTI->PR |= EXTI_PR_PR5;
-      EXTI->IMR |= EXTI_IMR_MR5;
-      NVIC_SetPriority(EXTI9_5_IRQn, PRIORITY_RF24);
-      NVIC_EnableIRQ(EXTI9_5_IRQn);
+//      AFIO->EXTICR[0X01] |= AFIO_EXTICR2_EXTI5_PB;
+//      EXTI->FTSR |= EXTI_FTSR_TR5;
+//      EXTI->PR |= EXTI_PR_PR5;
+//      EXTI->IMR |= EXTI_IMR_MR5;
+//      NVIC_SetPriority(EXTI9_5_IRQn, PRIORITY_RF24);
+//      NVIC_EnableIRQ(EXTI9_5_IRQn);
       i=00;
     }
   }while(i--);// Если прочитано не то что записано, то значит либо радио-чип ещё инициализируется, либо не работает.

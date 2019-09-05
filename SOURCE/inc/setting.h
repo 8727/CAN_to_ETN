@@ -10,7 +10,6 @@
 #include "rs485.h"
 #include "nrf24.h"
 #include "ethernet.h"
-#include "wizchip_conf.h"
 
 
 /* Define --------------------------------------------------------------------*/
@@ -31,7 +30,7 @@
 #define RF24_CH                          0x70        // 0-125 0x00-0x7D
 
 #define IP_MAC                           (*(unsigned long *)0x1FFFF7F0) //0x1FFFF7E8 0x1FFFF7EC 0x1FFFF7F0
-static const uint8_t IP_ADDR[] =         {10, 0, 0, 253};
+static const uint8_t IP_ADDR[] =         {10, 0, 0, 201};
 static const uint8_t IP_MASK[] =         {255, 255, 255, 0};
 static const uint8_t IP_GATE[] =         {10, 0, 0, 254};
 static const uint8_t IP_SEND[] =         {10, 0, 0, 252};
@@ -127,15 +126,19 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 #define PRIORITY_W5500                   0x00
 
 /* Define --------------------------------------------------------------------*/
-#define  W5500_SOCK_DHCP                 0x07
-#define  W5500_SOCK_SNTP                 0x06
-//#define  W5500_SOCK_HTTP                 0x05
-//#define  W5500_SOCK_SNTP                 0x04
-//#define  W5500_SOCK_SNTP                 0x03
-//#define  W5500_SOCK_SNTP                 0x02
-//#define  W5500_SOCK_SNTP                 0x01
-#define  W5500_SOCK_HTTP                 0x00
-#define  W5500_DATA_BUF_SIZE             2048
+
+#define DATA_BUF_SIZE                    2048
+#define MY_MAX_DHCP_RETRY                0x0A
+#define SOCK_DHCP                        7
+//#define W5500_SOCK_DHCP                  0x07
+//#define  W5500_SOCK_SNTP                 0x06
+////#define  W5500_SOCK_HTTP                 0x05
+////#define  W5500_SOCK_SNTP                 0x04
+////#define  W5500_SOCK_SNTP                 0x03
+////#define  W5500_SOCK_SNTP                 0x02
+////#define  W5500_SOCK_SNTP                 0x01
+//#define  W5500_SOCK_HTTP                 0x00
+//#define  W5500_DATA_BUF_SIZE             2048
 
 /* Define --------------------------------------------------------------------*/
 struct settingsInitTypeDef{
@@ -170,12 +173,13 @@ struct settingsInitTypeDef{
   uint8_t  rf24TypeSend4;
   uint8_t  rf24TypeAddr4;
   // W5500
-  uint8_t  dhcpOn;
+  _Bool  dhcpOn;
   uint8_t  dhcpSt;
   
   
   
 };
+
 
 extern struct settingsInitTypeDef settings;
 
