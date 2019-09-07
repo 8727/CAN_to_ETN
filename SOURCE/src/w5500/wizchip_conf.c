@@ -384,112 +384,53 @@ int8_t ctlnetwork(ctlnetwork_type cntype, void* arg)
    return 0;
 }
 
-void wizchip_sw_reset(void)
-{
-   uint8_t gw[4], sn[4], sip[4];
-   uint8_t mac[6];
-//A20150601
-#if _WIZCHIP_IO_MODE_  == _WIZCHIP_IO_MODE_BUS_INDIR_
-   uint16_t mr = (uint16_t)getMR();
-   setMR(mr | MR_IND);
-#endif
-//
-   getSHAR(mac);
-   getGAR(gw);  getSUBR(sn);  getSIPR(sip);
-   setMR(MR_RST);
-   getMR(); // for delay
-//A2015051 : For indirect bus mode 
-#if _WIZCHIP_IO_MODE_  == _WIZCHIP_IO_MODE_BUS_INDIR_
-   setMR(mr | MR_IND);
-#endif
-//
-   setSHAR(mac);
-   setGAR(gw);
-   setSUBR(sn);
-   setSIPR(sip);
+void wizchip_sw_reset(void){
+  uint8_t mac[6], gw[4], sn[4], sip[4];
+  getSHAR(mac);
+  getGAR(gw);
+  getSUBR(sn);
+  getSIPR(sip);
+  setMR(MR_RST);
+  getMR(); // for delay
+  setSHAR(mac);
+  setGAR(gw);
+  setSUBR(sn);
+  setSIPR(sip);
 }
 
-int8_t wizchip_init(uint8_t* txsize, uint8_t* rxsize)
-{
-   int8_t i;
-   int8_t tmp = 0;
-   wizchip_sw_reset();
-   if(txsize)
-   {
-      tmp = 0;
-   //M20150601 : For integrating with W5300
-   #if _WIZCHIP_ == 5300
-      for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-      {
-         if(txsize[i] >= 64) return -1;   //No use 64KB even if W5300 support max 64KB memory allocation
-         tmp += txsize[i];
-         if(tmp > 128) return -1;
-      }
-      if(tmp % 8) return -1;
-   #else      
-      for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-      {
-         tmp += txsize[i];
-         if(tmp > 16) return -1;
-      }
-   #endif
-      for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-         setSn_TXBUF_SIZE(i, txsize[i]);
-   }
-   if(rxsize)
-   {
-      tmp = 0;
-   #if _WIZCHIP_ == 5300
-      for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-      {
-         if(rxsize[i] >= 64) return -1;   //No use 64KB even if W5300 support max 64KB memory allocation         
-         tmp += rxsize[i];
-         if(tmp > 128) return -1;
-      }
-      if(tmp % 8) return -1;
-   #else         
-      for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-      {
-         tmp += rxsize[i];
-         if(tmp > 16) return -1;
-      }
-   #endif
-
-      for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
-         setSn_RXBUF_SIZE(i, rxsize[i]);
-   }
-   return 0;
+int8_t wizchip_init(uint8_t* txsize, uint8_t* rxsize){
+  int8_t i;
+  int8_t tmp = 0;
+  wizchip_sw_reset();
+  if(txsize){
+    tmp = 0;
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++){
+      tmp += txsize[i];
+      if(tmp > 16) return -1;
+    }
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+      setSn_TXBUF_SIZE(i, txsize[i]);
+  }
+  if(rxsize){
+    tmp = 0;
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++){
+      tmp += rxsize[i];
+      if(tmp > 16) return -1;
+    }
+    for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+      setSn_RXBUF_SIZE(i, rxsize[i]);
+  }
+  return 0;
 }
 
-void wizchip_clrinterrupt(intr_kind intr)
-{
-   uint8_t ir  = (uint8_t)intr;
-   uint8_t sir = (uint8_t)((uint16_t)intr >> 8);
-#if _WIZCHIP_ < 5500
-   ir |= (1<<4); // IK_WOL
-#endif
-#if _WIZCHIP_ == 5200
-   ir |= (1 << 6);
-#endif
-   
-#if _WIZCHIP_ < 5200
-   sir &= 0x0F;
-#endif
-
-#if _WIZCHIP_ == 5100
-   ir |= sir;
-   setIR(ir);
-//A20150601 : For integrating with W5300
-#elif _WIZCHIP_ == 5300
-   setIR( ((((uint16_t)ir) << 8) | (((uint16_t)sir) & 0x00FF)) );
-#else
-   setIR(ir);
-   setSIR(sir);
-#endif   
+void wizchip_clrinterrupt(intr_kind intr){
+  uint8_t ir  = (uint8_t)intr;
+  uint8_t sir = (uint8_t)((uint16_t)intr >> 8);
+  setIR(ir);
+  setSIR(sir);
 }
 
-intr_kind wizchip_getinterrupt(void)
-{
+intr_kind wizchip_getinterrupt(void){
    uint8_t ir  = 0;
    uint8_t sir = 0;
    uint16_t ret = 0;
@@ -572,8 +513,7 @@ intr_kind wizchip_getinterruptmask(void)
   return (intr_kind)ret;
 }
 
-int8_t wizphy_getphylink(void)
-{
+int8_t wizphy_getphylink(void){
    int8_t tmp;
 #if   _WIZCHIP_ == 5200
    if(getPHYSTATUS() & PHYSTATUS_LINK)
@@ -726,59 +666,49 @@ int8_t wizphy_setphypmode(uint8_t pmode)
 #endif
 
 
-void wizchip_setnetinfo(wiz_NetInfo* pnetinfo)
-{
-   setSHAR(pnetinfo->mac);
-   setGAR(pnetinfo->gw);
-   setSUBR(pnetinfo->sn);
-   setSIPR(pnetinfo->ip);
-   _DNS_[0] = pnetinfo->dns[0];
-   _DNS_[1] = pnetinfo->dns[1];
-   _DNS_[2] = pnetinfo->dns[2];
-   _DNS_[3] = pnetinfo->dns[3];
-   _DHCP_   = pnetinfo->dhcp;
+void wizchip_setnetinfo(wiz_NetInfo* pnetinfo){
+  setSHAR(pnetinfo->mac);
+  setGAR(pnetinfo->gw);
+  setSUBR(pnetinfo->sn);
+  setSIPR(pnetinfo->ip);
+  _DNS_[0] = pnetinfo->dns[0];
+  _DNS_[1] = pnetinfo->dns[1];
+  _DNS_[2] = pnetinfo->dns[2];
+  _DNS_[3] = pnetinfo->dns[3];
+  _DHCP_   = pnetinfo->dhcp;
 }
 
-void wizchip_getnetinfo(wiz_NetInfo* pnetinfo)
-{
-   getSHAR(pnetinfo->mac);
-   getGAR(pnetinfo->gw);
-   getSUBR(pnetinfo->sn);
-   getSIPR(pnetinfo->ip);
-   pnetinfo->dns[0]= _DNS_[0];
-   pnetinfo->dns[1]= _DNS_[1];
-   pnetinfo->dns[2]= _DNS_[2];
-   pnetinfo->dns[3]= _DNS_[3];
-   pnetinfo->dhcp  = _DHCP_;
+void wizchip_getnetinfo(wiz_NetInfo* pnetinfo){
+  getSHAR(pnetinfo->mac);
+  getGAR(pnetinfo->gw);
+  getSUBR(pnetinfo->sn);
+  getSIPR(pnetinfo->ip);
+  pnetinfo->dns[0]= _DNS_[0];
+  pnetinfo->dns[1]= _DNS_[1];
+  pnetinfo->dns[2]= _DNS_[2];
+  pnetinfo->dns[3]= _DNS_[3];
+  pnetinfo->dhcp  = _DHCP_;
 }
 
-int8_t wizchip_setnetmode(netmode_type netmode)
-{
-   uint8_t tmp = 0;
-#if _WIZCHIP_ != 5500   
-   if(netmode & ~(NM_WAKEONLAN | NM_PPPOE | NM_PINGBLOCK)) return -1;
-#else
-   if(netmode & ~(NM_WAKEONLAN | NM_PPPOE | NM_PINGBLOCK | NM_FORCEARP)) return -1;
-#endif      
-   tmp = getMR();
-   tmp |= (uint8_t)netmode;
-   setMR(tmp);
-   return 0;
+int8_t wizchip_setnetmode(netmode_type netmode){
+  uint8_t tmp = 0;
+  if(netmode & ~(NM_WAKEONLAN | NM_PPPOE | NM_PINGBLOCK | NM_FORCEARP)) return -1;
+  tmp = getMR();
+  tmp |= (uint8_t)netmode;
+  setMR(tmp);
+  return 0;
 }
 
-netmode_type wizchip_getnetmode(void)
-{
-   return (netmode_type) getMR();
+netmode_type wizchip_getnetmode(void){
+  return (netmode_type) getMR();
 }
 
-void wizchip_settimeout(wiz_NetTimeout* nettime)
-{
-   setRCR(nettime->retry_cnt);
-   setRTR(nettime->time_100us);
+void wizchip_settimeout(wiz_NetTimeout* nettime){
+  setRCR(nettime->retry_cnt);
+  setRTR(nettime->time_100us);
 }
 
-void wizchip_gettimeout(wiz_NetTimeout* nettime)
-{
-   nettime->retry_cnt = getRCR();
-   nettime->time_100us = getRTR();
+void wizchip_gettimeout(wiz_NetTimeout* nettime){
+  nettime->retry_cnt = getRCR();
+  nettime->time_100us = getRTR();
 }

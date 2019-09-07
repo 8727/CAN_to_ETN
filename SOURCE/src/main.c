@@ -15,5 +15,10 @@ int main(void){
     if(0x00 == (0x80 & settings.ethernet)){ if(EthernetPHYLINK()) EthernetInitIP(); }
     DelayMs(100);
     
+    
+    
+    
+    
+    
   }
 }

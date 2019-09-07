@@ -190,7 +190,4 @@ void Setting(void){
   Nrf24Init();
   EthernetInit();
   EthernetSettings();
-  #if defined DEBUG_SETTING
-    printf("\n\r\t\tStop setting\n\r");
-  #endif
 }

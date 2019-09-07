@@ -1,7 +1,7 @@
 #include "ethernet.h"
 
 wiz_NetInfo gWIZNETINFO;
-uint8_t dhcpBuff[W5500_DATA_BUF_SIZE];
+uint8_t dhcpBuff[W5500_DHCP_BUF_SIZE];
 uint8_t my_dhcp_retry = 0x00;
 
 void EthernetCsLOW(void){ ETHERNET_CS_LOW; }
@@ -38,6 +38,8 @@ void EthernetInfo(void){
     printf("\tGate way   : %d.%d.%d.%d\r\n",info.gw[0],info.gw[1],info.gw[2],info.gw[3]);
     printf("\tDNS Server : %d.%d.%d.%d\r\n",info.dns[0],info.dns[1],info.dns[2],info.dns[3]);
     printf("\t=======================================\r\n");
+    if(info.dhcp == NETINFO_DHCP){ printf("\tDHCP LEASED TIME : %ld Sec.\n\r\n", getDHCPLeasetime());}//получить время аренды на сервере DHCP
+    printf("< OK >    Initialization ethernet\r\n");
   #endif
 }
 
@@ -76,9 +78,6 @@ void EthernetIPAssign(void){//будет вызвана при первом на
   /* Network initialization */
   ctlnetwork(CN_SET_NETINFO, (void*)&gWIZNETINFO);  // apply from dhcp
   EthernetInfo();
-  #ifdef DEBUG_ETHERNET
-    printf("\tDHCP LEASED TIME : %ld Sec.\n\r\n", getDHCPLeasetime());//получить время аренды на сервере DHCP
-  #endif
 }
 
 void EthernetIpConflict(void){
@@ -91,18 +90,15 @@ void EthernetIpConflict(void){
 
 uint8_t EthernetPHYLINK(void){
   uint8_t x;
-  uint8_t i = 0x0A;
-  do{
-    ctlwizchip(CW_GET_PHYLINK, (void*)&x);
-    if(x == PHY_LINK_OFF){
-      #if defined DEBUG_ETHERNET
-        printf("Unknown PHY link status.\r\n");
-      #endif
-    }else{
-      settings.ethernet |= 0x80;
-      return true;
-    }
-  }while(i--);
+  ctlwizchip(CW_GET_PHYLINK, (void*)&x);
+  if(x == PHY_LINK_OFF){
+    #if defined DEBUG_ETHERNET
+      printf("Unknown PHY link status.\r\n");
+    #endif
+  }else{
+    settings.ethernet |= 0x80;
+    return true;
+  }
   return false;
 }
 
@@ -117,10 +113,6 @@ void EthernetInitIP(void){
     ctlnetwork(CN_SET_NETINFO, (void*)&gWIZNETINFO);   // назначаем статический ip
     EthernetInfo();
   }
-  
-  #if defined DEBUG_ETHERNET
-    printf("< OK >    Initialization ethernet\r\n");
-  #endif
 }
 
 void EthernetSettings(void){
@@ -129,19 +121,14 @@ void EthernetSettings(void){
   ETHERNET_RESET_HIGHT;
   DelayMs(0x01);
   
-  uint8_t W5500FifoSize[2][8] = {{2, 2, 2, 2, 2, 2, 2, 2}, {2, 2, 2, 2, 2, 2, 2, 2}};
+  uint8_t W5500FifoSize[8] = {2, 2, 2, 2, 2, 2, 2, 2};
 
   EthernetCsHIGHT();
  
   reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte); /*передаем функции чтения записи драйверу */
   reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT); /* CS function register */
 
-  if(ctlwizchip(CW_INIT_WIZCHIP, (void*)W5500FifoSize) == -1){
-    #if defined DEBUG_ETHERNET
-      printf("W5500 initialized fail.\r\n");
-    #endif
-    while(1);
-  }
+  wizchip_init(W5500FifoSize, W5500FifoSize);
 }
 
 void EthernetInit(void){
