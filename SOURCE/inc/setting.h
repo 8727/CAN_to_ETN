@@ -20,7 +20,7 @@
 #define DEVICE_NUMBER                    0x00        // Device number
 #define RTC_CALIBRATION                  0x00        // RTC CalibrationPpm
 #define LCD_ROTATION                     0x09        // 0x27 Rotation_270, 0x18 Rotation_180, 0x09 Rotation_90, 0x00 Rotation_0
-#define TIME_ZONE                        19          //
+#define TIME_ZONE                        19          // Moscow Standard Time, Eastern African Time
 
 #define RF24_ADDR                        0x8727      //
 #define RF24_PRIM                        0x70
@@ -29,9 +29,9 @@
 #define RF24_POWER                       0x03        // 0x00 -18dBm, 0x01 -12dBm, 0x02 -6dBm, 0x03 0dBm
 #define RF24_CH                          0x70        // 0-125 0x00-0x7D
 
-#define IDCODE_1                           (*(unsigned long *)0x1FFFF7E8)
-#define IDCODE_2                           (*(unsigned long *)0x1FFFF7EC)
-#define IDCODE_3                           (*(unsigned long *)0x1FFFF7F0)
+#define IDCODE_1                         (*(unsigned long *)0x1FFFF7E8)
+#define IDCODE_2                         (*(unsigned long *)0x1FFFF7EC)
+#define IDCODE_3                         (*(unsigned long *)0x1FFFF7F0)
   
 static const uint8_t IP_ADDR[] =         {10, 0, 0, 201};
 static const uint8_t IP_MASK[] =         {255, 255, 255, 0};
@@ -112,7 +112,7 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 #define ADDR_W5500_DHCP                  0x36
 #define ADDR__________X                  0x37
 #define ADDR_W5500_IP                    0x38 // 0x38-0x3B
-#define ADDR_W5500_NS                    0x3C // 0x3C-0x3F
+#define ADDR_W5500_SN                    0x3C // 0x3C-0x3F
 #define ADDR_W5500_GW                    0x40 // 0x40-0x43
 #define ADDR_W5500_SEND                  0x44 // 0x44-0x47
 #define ADDR_W5500_NTP_P                 0x48 // 0x48-0x4B
@@ -133,7 +133,7 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 #define DATA_BUF_SIZE                    2048
 #define MY_MAX_DHCP_RETRY                0x0A
 #define W5500_SOCK_DHCP                  0x07
-#define  W5500_SOCK_SNTP                 0x06
+#define W5500_SOCK_SNTP                  0x06
 //#define  W5500_SOCK_HTTP                 0x05
 //#define  W5500_SOCK_SNTP                 0x04
 //#define  W5500_SOCK_SNTP                 0x03
@@ -193,6 +193,7 @@ void WriteData32ToBuffer(uint8_t addr, uint32_t data, uint8_t* buff);
 void WriteData16ToBuffer(uint8_t addr, uint16_t data, uint8_t* buff);
 uint32_t ReadData32Buffer(uint8_t addr, uint8_t* buff);
 uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff);
+void CopyBeffer(uint8_t* receiver ,uint8_t* source, uint8_t addr, uint8_t len);
 
 void ReadConfig(void);
 void Setting(void);

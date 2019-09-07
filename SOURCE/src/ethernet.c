@@ -56,9 +56,9 @@ void dhcp_rutine(void){
         #ifdef DEBUG_ETHERNET
           printf(">> DHCP %d Failed\r\n", my_dhcp_retry);
         #endif
-        my_dhcp_retry = 0;
+        my_dhcp_retry = false;
         DHCP_stop();      // if restart, recall DHCP_init()
-        gWIZNETINFO.dhcp = NETINFO_STATIC;ctlnetwork(CN_SET_NETINFO, (void*)&gWIZNETINFO);
+        gWIZNETINFO.dhcp = NETINFO_STATIC;
         ctlnetwork(CN_SET_NETINFO, (void*)&gWIZNETINFO);   // назначаем статический ip
         EthernetInfo();
       }
@@ -100,11 +100,9 @@ void EthernetSettings(void){
   uint8_t W5500FifoSize[2][8] = {{2, 2, 2, 2, 2, 2, 2, 2, }, {2, 2, 2, 2, 2, 2, 2, 2}};
 
   EthernetCsHIGHT();
- /*передаем функции чтения записи драйверу */
-  reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte);
-
-  /* CS function register */
-  reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT);
+ 
+  reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte); /*передаем функции чтения записи драйверу */
+  reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT); /* CS function register */
 
   if(ctlwizchip(CW_INIT_WIZCHIP, (void*)W5500FifoSize) == -1){
     #if defined DEBUG_ETHERNET

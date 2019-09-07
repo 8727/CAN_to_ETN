@@ -9,7 +9,7 @@ int fputc(int ch, FILE *f){ if(DEMCR & TRCENA){ while(ITM_Port32(0x00) == 0x00);
 }
 
 int main(void){
-  printf("\tHardware : %s/tSoftware : %s\r\n",HW_BUILD ,SW_BUILD);
+  printf("\tHardware : %s\tSoftware : %s\r\n",HW_BUILD ,SW_BUILD);
   printf("Unique ID 0x%08x 0x%08x 0x%08x\r\n",IDCODE_1, IDCODE_2, IDCODE_3);
   Setting();
   while(0x01){
@@ -21,6 +21,6 @@ int main(void){
       SNTP_init(W5500_SOCK_SNTP, settings.sntp, settings.timeZone, sntpBuff);
       while(SNTP_run() != 1);
       DelayMs(59000);
-  }
+    }
   }
 }

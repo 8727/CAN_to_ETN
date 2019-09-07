@@ -42,6 +42,10 @@ uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff){
   return data;
 }
 
+void CopyBeffer(uint8_t* receiver ,uint8_t* source, uint8_t addr, uint8_t len){
+  for(uint8_t i = 0x00; i < len; i++){ receiver[i] = source[addr + i];}
+}
+
 void ReadConfig(void){
   #if defined DEBUG_SETTING
     printf("< OK >    Read configuration\r\n");
@@ -89,7 +93,7 @@ void ReadConfig(void){
     WriteData32ToBuffer(ADDR_W5500_MAC +0x02, (IDCODE_1 & 0xFCFFFFFF), buffEeprom);
     WriteData16ToBuffer(ADDR_W5500_MAC, RF24_ADDR, buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_IP, ReadData32Buffer(0x00, (uint8_t*)IP_ADDR), buffEeprom);
-    WriteData32ToBuffer(ADDR_W5500_NS, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_SN, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_GW, ReadData32Buffer(0x00, (uint8_t*)IP_GATE), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_SEND, ReadData32Buffer(0x00, (uint8_t*)IP_SEND), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_NTP_P, ReadData32Buffer(0x00, (uint8_t*)IP_NTP_P), buffEeprom);
@@ -129,12 +133,11 @@ void ReadConfig(void){
   settings.rf24TypeAddr4 = buffEeprom[ADDR_RF24_TYPE_ADDR_4];
 /*----------------------------------------------------------------------------*/
   for(i = 0x00; i < 0x06; i++){ gWIZNETINFO.mac[0x05 - i] = buffEeprom[ADDR_W5500_MAC + i];} // MAC адрес
-  for(i = 0x00; i < 0x04; i++){ gWIZNETINFO.ip[i] = buffEeprom[ADDR_W5500_IP + i];} // IP адрес
-  for(i = 0x00; i < 0x04; i++){ gWIZNETINFO.sn[i] = buffEeprom[ADDR_W5500_NS + i];} // SN адрес
-  for(i = 0x00; i < 0x04; i++){ gWIZNETINFO.gw[i] = buffEeprom[ADDR_W5500_GW + i];} // GW адрес
+  CopyBeffer(gWIZNETINFO.ip, buffEeprom, ADDR_W5500_IP, 0x04);
+  CopyBeffer(gWIZNETINFO.sn, buffEeprom, ADDR_W5500_SN, 0x04);
+  CopyBeffer(gWIZNETINFO.gw, buffEeprom, ADDR_W5500_GW, 0x04);
+  CopyBeffer(settings.sntp, buffEeprom, ADDR_W5500_NTP_P, 0x04);
   gWIZNETINFO.dhcp = NETINFO_DHCP;
-  
-  for(i = 0x00; i < 0x04; i++){ settings.sntp[i] = buffEeprom[ADDR_W5500_NTP_P + i];} // SNTP адрес
   settings.timeZone = TIME_ZONE;
 /*----------------------------------------------------------------------------*/
   
