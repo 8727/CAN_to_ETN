@@ -89,40 +89,24 @@ void EthernetIpConflict(void){
   while(1); // this example is halt.
 }
 
-void EthernetPHYLINK(void){
-  uint8_t temp;
+uint8_t EthernetPHYLINK(void){
+  uint8_t x;
+  uint8_t i = 0x0A;
   do{
-    ctlwizchip(CW_GET_PHYLINK, (void*)&temp);
-    if(temp == PHY_LINK_OFF){
+    ctlwizchip(CW_GET_PHYLINK, (void*)&x);
+    if(x == PHY_LINK_OFF){
       #if defined DEBUG_ETHERNET
-      DelayMs(0x1F4);
         printf("Unknown PHY link status.\r\n");
       #endif
+    }else{
+      settings.ethernet |= 0x80;
+      return true;
     }
-  }while(temp == PHY_LINK_OFF);
-  settings.ethernet |= 0x80;
+  }while(i--);
+  return false;
 }
 
-void EthernetSettings(void){
-  ETHERNET_RESET_LOW;
-  DelayMs(0x01);
-  ETHERNET_RESET_HIGHT;
-  DelayMs(0x01);
-  
-  uint8_t W5500FifoSize[2][8] = {{2, 2, 2, 2, 2, 2, 2, 2, }, {2, 2, 2, 2, 2, 2, 2, 2}};
-
-  EthernetCsHIGHT();
- 
-  reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte); /*передаем функции чтения записи драйверу */
-  reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT); /* CS function register */
-
-  if(ctlwizchip(CW_INIT_WIZCHIP, (void*)W5500FifoSize) == -1){
-    #if defined DEBUG_ETHERNET
-      printf("W5500 initialized fail.\r\n");
-    #endif
-    while(1);
-  }
-  EthernetPHYLINK();
+void EthernetInitIP(void){
   setSHAR(gWIZNETINFO.mac); //настройка MAC
   if(gWIZNETINFO.dhcp == NETINFO_DHCP){
     DHCP_init(W5500_SOCK_DHCP, dhcpBuff);//передаем номер сокета  
@@ -137,6 +121,27 @@ void EthernetSettings(void){
   #if defined DEBUG_ETHERNET
     printf("< OK >    Initialization ethernet\r\n");
   #endif
+}
+
+void EthernetSettings(void){
+  ETHERNET_RESET_LOW;
+  DelayMs(0x01);
+  ETHERNET_RESET_HIGHT;
+  DelayMs(0x01);
+  
+  uint8_t W5500FifoSize[2][8] = {{2, 2, 2, 2, 2, 2, 2, 2}, {2, 2, 2, 2, 2, 2, 2, 2}};
+
+  EthernetCsHIGHT();
+ 
+  reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte); /*передаем функции чтения записи драйверу */
+  reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT); /* CS function register */
+
+  if(ctlwizchip(CW_INIT_WIZCHIP, (void*)W5500FifoSize) == -1){
+    #if defined DEBUG_ETHERNET
+      printf("W5500 initialized fail.\r\n");
+    #endif
+    while(1);
+  }
 }
 
 void EthernetInit(void){

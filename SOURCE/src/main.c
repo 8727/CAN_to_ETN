@@ -12,6 +12,7 @@ int main(void){
   printf("Unique ID 0x%08x 0x%08x 0x%08x\r\n",IDCODE_1, IDCODE_2, IDCODE_3);
   Setting();
   while(0x01){
+    if(0x00 == (0x80 & settings.ethernet)){ if(EthernetPHYLINK()) EthernetInitIP(); }
     DelayMs(100);
     
   }

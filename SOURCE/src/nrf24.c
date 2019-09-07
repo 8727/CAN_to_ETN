@@ -144,8 +144,8 @@ void Nrf24Init(void){// Производим первоначальную нас
   GPIOB->CRH |= GPIO_CRH_MODE8 | GPIO_CRH_MODE12 | GPIO_CRH_MODE13 | GPIO_CRH_MODE15;
   
   RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
-//  SPI2->CR1 &= ~SPI_CR1_BR; // 40MHz
-  SPI2->CR1 |= SPI_CR1_BR_0; // 10MHz
+  SPI2->CR1 &= ~SPI_CR1_BR; // 40MHz
+//  SPI2->CR1 |= SPI_CR1_BR_0; // 10MHz
   SPI2->CR1 &= ~SPI_CR1_CPOL;
   SPI2->CR1 &= ~SPI_CR1_CPHA;
   SPI2->CR1 &= ~SPI_CR1_DFF;

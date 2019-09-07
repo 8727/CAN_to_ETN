@@ -18,6 +18,8 @@
 /* Define --------------------------------------------------------------------*/
 
 void EthernetDhcpRutine(void);
+uint8_t EthernetPHYLINK(void);
+void EthernetInitIP(void);
 void EthernetSettings(void);
 void EthernetInit(void);
 
