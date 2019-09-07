@@ -61,7 +61,7 @@ void ReadConfig(void){
     dateBuild.hour  = BUILD_TIME_H;
     dateBuild.min   = BUILD_TIME_M;
     dateBuild.sec   = BUILD_TIME_S;
-    WriteData32ToBuffer(ADDR_DATE_BUILD, RtcTimeToSeconds(&dateBuild), buffEeprom);
+    WriteData32ToBuffer(ADDR_DATE_BUILD, (RtcTimeToSeconds(&dateBuild)) - RtcTimeZoneToSeconds(TIME_ZONE), buffEeprom);
     buffEeprom[ADDR_STATUS] = STATUS;
     buffEeprom[ADDR_DEVICE_TYPE] = DEVICE_TYPE;
     buffEeprom[ADDR_DEVICE_NUMBER] = DEVICE_NUMBER;
@@ -90,7 +90,7 @@ void ReadConfig(void){
     
 /*----------------------------------------------------------------------------*/
     
-    WriteData32ToBuffer(ADDR_W5500_MAC +0x02, (IDCODE_1 & 0xFCFFFFFF), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_MAC +0x02, (IDCODE_2 & 0xFCFFFF00), buffEeprom);
     WriteData16ToBuffer(ADDR_W5500_MAC, RF24_ADDR, buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_IP, ReadData32Buffer(0x00, (uint8_t*)IP_ADDR), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_SN, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
@@ -115,6 +115,7 @@ void ReadConfig(void){
   settings.canSpeed = ReadData32Buffer(ADDR_CAN_SPEED, buffEeprom);
   settings.rs485Speed = ReadData16Buffer(ADDR_RS485_SPEED, buffEeprom);
   settings.canDevice = (settings.type << 0x08) | (settings.number << 0x04);
+  settings.timeZone = TIME_ZONE;
   //RF24L01
   settings.rf24Addr = ReadData16Buffer(ADDR_RF24_ADDR, buffEeprom);
   settings.rf24Prim = buffEeprom[ADDR_RF24_PRIM];
@@ -133,12 +134,12 @@ void ReadConfig(void){
   settings.rf24TypeAddr4 = buffEeprom[ADDR_RF24_TYPE_ADDR_4];
 /*----------------------------------------------------------------------------*/
   for(i = 0x00; i < 0x06; i++){ gWIZNETINFO.mac[0x05 - i] = buffEeprom[ADDR_W5500_MAC + i];} // MAC адрес
-  CopyBeffer(gWIZNETINFO.ip, buffEeprom, ADDR_W5500_IP, 0x04);
-  CopyBeffer(gWIZNETINFO.sn, buffEeprom, ADDR_W5500_SN, 0x04);
-  CopyBeffer(gWIZNETINFO.gw, buffEeprom, ADDR_W5500_GW, 0x04);
-  CopyBeffer(settings.sntp, buffEeprom, ADDR_W5500_NTP_P, 0x04);
+  CopyBeffer(gWIZNETINFO.ip, buffEeprom, ADDR_W5500_IP, 0x04); // IP адрес
+  CopyBeffer(gWIZNETINFO.sn, buffEeprom, ADDR_W5500_SN, 0x04); // SN адрес
+  CopyBeffer(gWIZNETINFO.gw, buffEeprom, ADDR_W5500_GW, 0x04); // GW адрес
+  CopyBeffer(settings.sntp, buffEeprom, ADDR_W5500_NTP_P, 0x04); // SNTP адрес
   gWIZNETINFO.dhcp = NETINFO_DHCP;
-  settings.timeZone = TIME_ZONE;
+  
 /*----------------------------------------------------------------------------*/
   
 }
