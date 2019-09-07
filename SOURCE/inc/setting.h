@@ -33,15 +33,15 @@
 #define IDCODE_2                         (*(unsigned long *)0x1FFFF7EC)
 #define IDCODE_3                         (*(unsigned long *)0x1FFFF7F0)
   
+#define W5500_ETHERNET                   0x1F        // 0x80 linkOn, 0x40 setting, 0x20 run dhcp, 0x10 dhcp, 0x0F dhcp
+#define UPDATE_SNTP                      0x3B        // +1 = 60 min update sntp
+  
 static const uint8_t IP_ADDR[] =         {10, 0, 0, 201};
 static const uint8_t IP_MASK[] =         {255, 255, 255, 0};
 static const uint8_t IP_GATE[] =         {10, 0, 0, 254};
 static const uint8_t IP_SEND[] =         {10, 0, 0, 252};
 static const uint8_t IP_NTP_P[] =        {88, 147, 254, 230};
 static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
-
-//#define HEATING_MAX_DEVICES              0x05
-//#define DS18B20_MAX_DEVICES              0x08
 
 #define EEPROM_BUFF                      0x80
 
@@ -109,8 +109,8 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 
 /* Define --------------------------------------------------------------------*/
 #define ADDR_W5500_MAC                   0x30 // 0x30-0x35
-#define ADDR_W5500_DHCP                  0x36
-#define ADDR__________X                  0x37
+#define ADDR_W5500_ETHERNET              0x36
+#define ADDR_UPDATE_SNTP                 0x37
 #define ADDR_W5500_IP                    0x38 // 0x38-0x3B
 #define ADDR_W5500_SN                    0x3C // 0x3C-0x3F
 #define ADDR_W5500_GW                    0x40 // 0x40-0x43
@@ -129,17 +129,15 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 #define PRIORITY_W5500                   0x00
 
 /* Define --------------------------------------------------------------------*/
-
 #define W5500_DATA_BUF_SIZE              0x0800
-#define MY_MAX_DHCP_RETRY                0x0A
 #define W5500_SOCK_DHCP                  0x07
 #define W5500_SOCK_SNTP                  0x06
-//#define  W5500_SOCK_HTTP                 0x05
-//#define  W5500_SOCK_SNTP                 0x04
-//#define  W5500_SOCK_SNTP                 0x03
-//#define  W5500_SOCK_SNTP                 0x02
-//#define  W5500_SOCK_SNTP                 0x01
-//#define  W5500_SOCK_HTTP                 0x00
+//#define  W5500_SOCK_                 0x05
+#define  W5500_SOCK_SEND                 0x04
+#define  W5500_SOCK_HTTP_3               0x03
+#define  W5500_SOCK_HTTP_2               0x02
+#define  W5500_SOCK_HTTP_1               0x01
+#define  W5500_SOCK_HTTP_0               0x00
 
 
 /* Define --------------------------------------------------------------------*/
@@ -153,7 +151,7 @@ struct settingsInitTypeDef{
   uint8_t  rotation;
   uint8_t  timeZone;
   uint16_t canDevice;
-  
+  uint32_t uptime;
   
   // LCD
   uint16_t maxX;
@@ -175,9 +173,12 @@ struct settingsInitTypeDef{
   uint8_t  rf24TypeSend4;
   uint8_t  rf24TypeAddr4;
   // W5500
-  uint8_t  lan;
-  uint8_t  dhcpOnSt;
-  uint8_t  sntp[0x04];
+  uint8_t  ethernet;
+  uint16_t updatSntp;
+  uint16_t timerSntp;
+  uint8_t  ipSend[0x04];
+  uint8_t  ipSntpP[0x04];
+  uint8_t  ipSntpS[0x04];
   
   
 };

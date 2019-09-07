@@ -43,6 +43,8 @@
 40) [UTC + 14]    Line Island Time
 */
 
+uint8_t sntpBuff[MAX_SNTP_BUF_SIZE];
+
 void RTC_IRQHandler(void){
   if(RTC->CRL & RTC_CRL_SECF){
     RTC->CRL &= ~RTC_CRL_SECF;
@@ -51,7 +53,12 @@ void RTC_IRQHandler(void){
 //      RtcTimeStamp();
 //      printf("\r\n");
     #endif
-//    if(0x00 != settings.dhcpOn && 0x00 == settings.dhcpSt) EthernetDhcpRutine();
+    if(0x40 & settings.ethernet) SNTP_init(W5500_SOCK_SNTP, settings.ipSntpP, sntpBuff);
+    if((0x40 & settings.ethernet) && (0x00 == settings.timerSntp)){ 
+      settings.timerSntp = settings.updatSntp; while(SNTP_run() != 1);
+    }else{ settings.timerSntp--; }
+    if(0x20 & settings.ethernet) EthernetDhcpRutine();
+    settings.uptime++;
   }
 }
 
@@ -71,7 +78,7 @@ uint32_t RtcTimeZoneAdjustment(uint32_t time, uint8_t time_zone){
 void RtcTimeStamp(void){
   RtcTypeDef date;
   RtcSecondsToTime(RtcTimeZoneAdjustment(RtcGetSeconds(),settings.timeZone), &date);
-  printf("\t%d.%d.%d %d:%02d:%02d\t", date.day, date.month, date.year, date.hour, date.min, date.sec);
+  printf("\t%d.%02d.%d %d:%02d:%02d\t", date.day, date.month, date.year, date.hour, date.min, date.sec);
 }
 
 void RtcSecondsToTime(uint32_t seconds, RtcTypeDef* unixTime){
@@ -122,8 +129,6 @@ void RtcSetSeconds(uint32_t seconds){
 
 void RtcInit(void){
   if((RCC->BDCR & RCC_BDCR_RTCEN) != RCC_BDCR_RTCEN){
-//    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
-//    RCC->APB1ENR |= RCC_APB1ENR_BKPEN;
     PWR->CR |= PWR_CR_DBP;
     RCC->BDCR |= RCC_BDCR_BDRST;
     RCC->BDCR &= ~RCC_BDCR_BDRST;

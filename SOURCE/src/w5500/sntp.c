@@ -1,13 +1,12 @@
 #include "sntp.h"
 
-
 ntpformat NTPformat;
 uint8_t ntpmessage[48];
 uint8_t *data_buf;
 uint8_t NTP_SOCKET;
 uint16_t ntp_retry_cnt = 0x00; //counting the ntp retry number
 
-void SNTP_init(uint8_t s, uint8_t *ntp_server, uint8_t tz, uint8_t *buf){
+void SNTP_init(uint8_t s, uint8_t *ntp_server, uint8_t *buf){
   CopyBeffer(NTPformat.dstaddr, ntp_server, 0x00, 0x04);
   NTP_SOCKET = s;
   data_buf = buf;
@@ -45,6 +44,7 @@ int8_t SNTP_run(void){
         for(uint8_t i = 0x00; i < 0x04; i++){ seconds = (seconds << 0x08) | data_buf[startindex + i]; }
         seconds -= 0x83AA7E80; //2208988800;
         RtcSetSeconds(seconds);
+        printf("Sync SNTP :");
         RtcTimeStamp();
         printf("\r\n");
         ntp_retry_cnt = false;

@@ -89,9 +89,10 @@ void ReadConfig(void){
     buffEeprom[ADDR_RF24_TYPE_ADDR_4] = 0x00;
     
 /*----------------------------------------------------------------------------*/
-    
     WriteData32ToBuffer(ADDR_W5500_MAC +0x02, (IDCODE_2 & 0xFCFFFF00), buffEeprom);
     WriteData16ToBuffer(ADDR_W5500_MAC, RF24_ADDR, buffEeprom);
+    buffEeprom[ADDR_W5500_ETHERNET] = W5500_ETHERNET;
+    buffEeprom[ADDR_UPDATE_SNTP] = UPDATE_SNTP;
     WriteData32ToBuffer(ADDR_W5500_IP, ReadData32Buffer(0x00, (uint8_t*)IP_ADDR), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_SN, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_GW, ReadData32Buffer(0x00, (uint8_t*)IP_GATE), buffEeprom);
@@ -132,13 +133,20 @@ void ReadConfig(void){
   settings.rf24TypeAddr3 = buffEeprom[ADDR_RF24_TYPE_ADDR_3];
   settings.rf24TypeSend4 = buffEeprom[ADDR_RF24_TYPE_SEND_4];
   settings.rf24TypeAddr4 = buffEeprom[ADDR_RF24_TYPE_ADDR_4];
+  
 /*----------------------------------------------------------------------------*/
   for(i = 0x00; i < 0x06; i++){ gWIZNETINFO.mac[0x05 - i] = buffEeprom[ADDR_W5500_MAC + i];} // MAC адрес
+  settings.ethernet = buffEeprom[ADDR_W5500_ETHERNET];
+  settings.updatSntp = (((buffEeprom[ADDR_UPDATE_SNTP] + 0x01) * 0x3C) - 0x01); // min * 60sec
+  settings.timerSntp = settings.updatSntp;
   CopyBeffer(gWIZNETINFO.ip, buffEeprom, ADDR_W5500_IP, 0x04); // IP адрес
   CopyBeffer(gWIZNETINFO.sn, buffEeprom, ADDR_W5500_SN, 0x04); // SN адрес
   CopyBeffer(gWIZNETINFO.gw, buffEeprom, ADDR_W5500_GW, 0x04); // GW адрес
-  CopyBeffer(settings.sntp, buffEeprom, ADDR_W5500_NTP_P, 0x04); // SNTP адрес
-  gWIZNETINFO.dhcp = NETINFO_DHCP;
+  CopyBeffer(settings.ipSend, buffEeprom, ADDR_W5500_SEND, 0x04); // SEND адрес
+  CopyBeffer(settings.ipSntpP, buffEeprom, ADDR_W5500_NTP_P, 0x04); // SNTP адрес
+  CopyBeffer(settings.ipSntpS, buffEeprom, ADDR_W5500_NTP_S, 0x04); // SNTP адрес
+  if(0x10 & settings.ethernet){ gWIZNETINFO.dhcp = NETINFO_DHCP; }else{ gWIZNETINFO.dhcp = NETINFO_STATIC; }
+  
   
 /*----------------------------------------------------------------------------*/
   

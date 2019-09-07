@@ -17,7 +17,7 @@
 
 /* Define --------------------------------------------------------------------*/
 
-void dhcp_rutine(void);
+void EthernetDhcpRutine(void);
 void EthernetSettings(void);
 void EthernetInit(void);
 

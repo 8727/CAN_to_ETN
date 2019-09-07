@@ -7,7 +7,7 @@
 #include "socket.h"
 
 #define MAX_SNTP_BUF_SIZE   sizeof(ntpformat) //< maximum size of DNS buffer. */
-#define ntp_port		123                     //ntp server port number
+#define ntp_port            123               //ntp server port number
 
 typedef struct _ntpformat{
   uint8_t  dstaddr[4];     /* destination (local) address */
@@ -26,14 +26,7 @@ typedef struct _ntpformat{
   uint64_t xmt;            /* transmit timestamp */
 }ntpformat;
 
-
-//#define SECS_PERDAY		86400UL             	// seconds in a day = 60*60*24
-//#define UTC_ADJ_HRS		9              	        // SEOUL : GMT+9
-//#define EPOCH			1900                    // NTP start year
-
-
-void SNTP_init(uint8_t s, uint8_t *ntp_server, uint8_t tz, uint8_t *buf);
+void SNTP_init(uint8_t s, uint8_t *ntp_server, uint8_t *buf);
 int8_t SNTP_run(void);
-
 
 #endif /* SNTP_H_ */

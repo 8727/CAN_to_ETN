@@ -5,7 +5,6 @@ uint8_t dhcpBuff[W5500_DATA_BUF_SIZE];
 uint8_t my_dhcp_retry = 0x00;
 
 void EthernetCsLOW(void){ ETHERNET_CS_LOW; }
-
 void EthernetCsHIGHT(void){ ETHERNET_CS_HIGHT; }
 
 uint8_t EthernetReadByte(void){
@@ -23,7 +22,7 @@ void EthernetWriteByte(uint8_t byte){
 }
 
 void EthernetInfo(void){
-  settings.lan = 0x01;
+  settings.ethernet |= 0x40;
   #ifdef DEBUG_ETHERNET
     uint8_t tmpstr[0x06] = {0,};
     wiz_NetInfo info;
@@ -42,7 +41,7 @@ void EthernetInfo(void){
   #endif
 }
 
-void dhcp_rutine(void){
+void EthernetDhcpRutine(void){
   switch(DHCP_run()){
     case DHCP_IP_ASSIGN://можем сделать что-то сдесь когда мы получили ip
     case DHCP_IP_CHANGED://можем сделать что-то сдесь при изменениее ip
@@ -52,7 +51,7 @@ void dhcp_rutine(void){
     case DHCP_RUNNING:
     case DHCP_FAILED://ошибка получения ip адреса от DHCP
       my_dhcp_retry++;//кол-во попыток
-      if(my_dhcp_retry > MY_MAX_DHCP_RETRY){
+      if(my_dhcp_retry > (0x0F & settings.ethernet)){
         #ifdef DEBUG_ETHERNET
           printf(">> DHCP %d Failed\r\n", my_dhcp_retry);
         #endif
@@ -68,7 +67,7 @@ void dhcp_rutine(void){
   }
 }
 
-void my_ip_assign(){//будет вызвана при первом назначении IP от DHCP сервера
+void EthernetIPAssign(void){//будет вызвана при первом назначении IP от DHCP сервера
   getIPfromDHCP(gWIZNETINFO.ip);//получаем ip от DHCP
   getGWfromDHCP(gWIZNETINFO.gw);//адрес шлюза
   getSNfromDHCP(gWIZNETINFO.sn);//маска под сети 
@@ -82,12 +81,26 @@ void my_ip_assign(){//будет вызвана при первом назнач
   #endif
 }
 
-void my_ip_conflict(){
+void EthernetIpConflict(void){
   #ifdef DEBUG_ETHERNET
     printf("CONFLICT IP from DHCP\r\n");
   #endif
   //halt or reset or any...
   while(1); // this example is halt.
+}
+
+void EthernetPHYLINK(void){
+  uint8_t temp;
+  do{
+    ctlwizchip(CW_GET_PHYLINK, (void*)&temp);
+    if(temp == PHY_LINK_OFF){
+      #if defined DEBUG_ETHERNET
+      DelayMs(0x1F4);
+        printf("Unknown PHY link status.\r\n");
+      #endif
+    }
+  }while(temp == PHY_LINK_OFF);
+  settings.ethernet |= 0x80;
 }
 
 void EthernetSettings(void){
@@ -96,7 +109,6 @@ void EthernetSettings(void){
   ETHERNET_RESET_HIGHT;
   DelayMs(0x01);
   
-  uint8_t temp;
   uint8_t W5500FifoSize[2][8] = {{2, 2, 2, 2, 2, 2, 2, 2, }, {2, 2, 2, 2, 2, 2, 2, 2}};
 
   EthernetCsHIGHT();
@@ -108,24 +120,23 @@ void EthernetSettings(void){
     #if defined DEBUG_ETHERNET
       printf("W5500 initialized fail.\r\n");
     #endif
-      while(1);
+    while(1);
   }
-  do{
-    ctlwizchip(CW_GET_PHYLINK, (void*)&temp);
-    if(temp == PHY_LINK_OFF){
-      #if defined DEBUG_ETHERNET
-//        printf("Unknown PHY link status.\r\n");
-      #endif
-    }
-  }while(temp == PHY_LINK_OFF);
+  EthernetPHYLINK();
   setSHAR(gWIZNETINFO.mac); //настройка MAC
-  DHCP_init(W5500_SOCK_DHCP, dhcpBuff);//передаем номер сокета  
-  reg_dhcp_cbfunc(my_ip_assign, my_ip_assign, my_ip_conflict);//передаем функции
+  if(gWIZNETINFO.dhcp == NETINFO_DHCP){
+    DHCP_init(W5500_SOCK_DHCP, dhcpBuff);//передаем номер сокета  
+    reg_dhcp_cbfunc(EthernetIPAssign, EthernetIPAssign, EthernetIpConflict);//передаем функции
+    settings.ethernet |= 0x20;
+  }else{
+    gWIZNETINFO.dhcp = NETINFO_STATIC;
+    ctlnetwork(CN_SET_NETINFO, (void*)&gWIZNETINFO);   // назначаем статический ip
+    EthernetInfo();
+  }
   
   #if defined DEBUG_ETHERNET
     printf("< OK >    Initialization ethernet\r\n");
   #endif
-
 }
 
 void EthernetInit(void){
