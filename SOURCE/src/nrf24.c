@@ -199,17 +199,19 @@ void Nrf24Init(void){// Производим первоначальную нас
   #if (defined DEBUG_NRF24 || defined INFO)
   if(Nrf24ReadReg(NRF24_CONFIG) == (NRF24_EN_CRC | NRF24_CRCO | NRF24_PWR_UP | NRF24_PRIM_RX)){
     printf("< OK >    Initialization nRF24\r\n");
-                                                 printf("\t*----------------------------*\r\n");
-    Nrf24ReadBuff(NRF24_TX_ADDR, buff, 0x03);    printf("\tRF24_TX_Primary:  0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], buff[0x00]);
-    Nrf24ReadBuff(NRF24_RX_ADDR_P0, buff, 0x03); printf("\tRF24_RX_Primary:  0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], buff[0x00]);
-    Nrf24ReadBuff(NRF24_TX_ADDR, buff, 0x03);    printf("\tRF24_RX_Second:   0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], RF24_SECON);
-    Nrf24ReadBuff(NRF24_RX_ADDR_P0, buff, 0x03); printf("\tRF24_RX_Brodcast: 0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], 0xFF);
-    Nrf24ReadBuff(NRF24_RX_ADDR_P1, buff, 0x03); printf("\tRF24_RX_Device:   0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], buff[0x00]);
-    i = Nrf24ReadReg(NRF24_CH);                  printf("\tNRF24_CH:         %d\r\n", i);
-    i = Nrf24ReadReg(NRF24_CONFIG);              printf("\tNRF24_CONFIG:     0x%02X\r\n", i);
-    i = Nrf24ReadReg(NRF24_SETUP);               printf("\tNRF24_SETUP:      0x%02X\r\n", i);
-    i = Nrf24ReadReg(NRF24_SETUP_RETR);          printf("\tNRF24_RETR:       0x%02X\r\n", i);
-    printf("\t*----------------------------*\r\n");
+                                                 printf("\t=======================================\r\n");
+                                                 printf("\t               nRF24L01+               \r\n");
+                                                 printf("\t=======================================\r\n");
+    Nrf24ReadBuff(NRF24_TX_ADDR, buff, 0x03);    printf("\tRF24_TX_Primary  : 0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], buff[0x00]);
+    Nrf24ReadBuff(NRF24_RX_ADDR_P0, buff, 0x03); printf("\tRF24_RX_Primary  : 0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], buff[0x00]);
+    Nrf24ReadBuff(NRF24_TX_ADDR, buff, 0x03);    printf("\tRF24_RX_Second   : 0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], RF24_SECON);
+    Nrf24ReadBuff(NRF24_RX_ADDR_P0, buff, 0x03); printf("\tRF24_RX_Brodcast : 0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], 0xFF);
+    Nrf24ReadBuff(NRF24_RX_ADDR_P1, buff, 0x03); printf("\tRF24_RX_Device   : 0x%02X%02X%02X\r\n", buff[0x02], buff[0x01], buff[0x00]);
+    i = Nrf24ReadReg(NRF24_CH);                  printf("\tNRF24_CH         : %d\r\n", i);
+    i = Nrf24ReadReg(NRF24_CONFIG);              printf("\tNRF24_CONFIG     : 0x%02X\r\n", i);
+    i = Nrf24ReadReg(NRF24_SETUP);               printf("\tNRF24_SETUP      : 0x%02X\r\n", i);
+    i = Nrf24ReadReg(NRF24_SETUP_RETR);          printf("\tNRF24_RETR       : 0x%02X\r\n", i);
+    printf("\t=======================================\r\n");
   }else{
     printf("<ERROR>   Initialization nRF24\r\n");
   }

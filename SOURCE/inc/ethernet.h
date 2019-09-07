@@ -18,8 +18,6 @@
 /* Define --------------------------------------------------------------------*/
 
 void dhcp_rutine(void);
-//void EthernetReadBuff(uint16_t addr,uint8_t op, uint8_t* buff, uint16_t len);
-//void EthernetWriteBuff(uint16_t addr,uint8_t op, uint8_t* buff, uint16_t len);
 void EthernetSettings(void);
 void EthernetInit(void);
 

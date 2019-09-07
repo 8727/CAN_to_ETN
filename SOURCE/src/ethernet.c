@@ -33,11 +33,11 @@ void EthernetInfo(void){
     printf("\t    WIZnet chip:  %s     ", tmpstr);
     if(info.dhcp == NETINFO_STATIC){ printf("STATIC IP\r\n"); }else{ printf("DHCP IP\r\n"); }
     printf("\t=======================================\r\n");
-    printf("\tMac address: %02x:%02x:%02x:%02x:%02x:%02x\n\r",info.mac[0],info.mac[1],info.mac[2],info.mac[3],info.mac[4],info.mac[5]);
-    printf("\tIP address : %d.%d.%d.%d\n\r",info.ip[0],info.ip[1],info.ip[2],info.ip[3]);
-    printf("\tSM Mask	   : %d.%d.%d.%d\n\r",info.sn[0],info.sn[1],info.sn[2],info.sn[3]);
-    printf("\tGate way   : %d.%d.%d.%d\n\r",info.gw[0],info.gw[1],info.gw[2],info.gw[3]);
-    printf("\tDNS Server : %d.%d.%d.%d\n\r",info.dns[0],info.dns[1],info.dns[2],info.dns[3]);
+    printf("\tMac address: %02x:%02x:%02x:%02x:%02x:%02x\r\n",info.mac[0],info.mac[1],info.mac[2],info.mac[3],info.mac[4],info.mac[5]);
+    printf("\tIP address : %d.%d.%d.%d\r\n",info.ip[0],info.ip[1],info.ip[2],info.ip[3]);
+    printf("\tSM Mask	   : %d.%d.%d.%d\r\n",info.sn[0],info.sn[1],info.sn[2],info.sn[3]);
+    printf("\tGate way   : %d.%d.%d.%d\r\n",info.gw[0],info.gw[1],info.gw[2],info.gw[3]);
+    printf("\tDNS Server : %d.%d.%d.%d\r\n",info.dns[0],info.dns[1],info.dns[2],info.dns[3]);
     printf("\t=======================================\r\n");
   #endif
 }
@@ -78,7 +78,7 @@ void my_ip_assign(){//будет вызвана при первом назнач
   ctlnetwork(CN_SET_NETINFO, (void*)&gWIZNETINFO);  // apply from dhcp
   EthernetInfo();
   #ifdef DEBUG_ETHERNET
-    printf("\tDHCP LEASED TIME : %ld Sec.\r\n", getDHCPLeasetime());//получить время аренды на сервере DHCP
+    printf("\tDHCP LEASED TIME : %ld Sec.\n\r\n", getDHCPLeasetime());//получить время аренды на сервере DHCP
   #endif
 }
 
@@ -104,7 +104,7 @@ void EthernetSettings(void){
   reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte);
 
   /* CS function register */
-   reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT);
+  reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT);
 
   if(ctlwizchip(CW_INIT_WIZCHIP, (void*)W5500FifoSize) == -1){
     #if defined DEBUG_ETHERNET
@@ -113,9 +113,10 @@ void EthernetSettings(void){
       while(1);
   }
   do{
-    if (ctlwizchip(CW_GET_PHYLINK, (void*)&temp) == -1){
+    ctlwizchip(CW_GET_PHYLINK, (void*)&temp);
+    if(temp == PHY_LINK_OFF){
       #if defined DEBUG_ETHERNET
-        printf("Unknown PHY link status.\r\n");
+//        printf("Unknown PHY link status.\r\n");
       #endif
     }
   }while(temp == PHY_LINK_OFF);

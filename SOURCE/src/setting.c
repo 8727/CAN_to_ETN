@@ -86,7 +86,7 @@ void ReadConfig(void){
     
 /*----------------------------------------------------------------------------*/
     
-    WriteData32ToBuffer(ADDR_W5500_MAC +0x02, (IP_MAC & 0xFCFFFFFF), buffEeprom);
+    WriteData32ToBuffer(ADDR_W5500_MAC +0x02, (IDCODE_1 & 0xFCFFFFFF), buffEeprom);
     WriteData16ToBuffer(ADDR_W5500_MAC, RF24_ADDR, buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_IP, ReadData32Buffer(0x00, (uint8_t*)IP_ADDR), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_NS, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
@@ -135,6 +135,7 @@ void ReadConfig(void){
   gWIZNETINFO.dhcp = NETINFO_DHCP;
   
   for(i = 0x00; i < 0x04; i++){ settings.sntp[i] = buffEeprom[ADDR_W5500_NTP_P + i];} // SNTP адрес
+  settings.timeZone = TIME_ZONE;
 /*----------------------------------------------------------------------------*/
   
 }
@@ -152,15 +153,14 @@ void ReadConfig(void){
 
 void Setting(void){
   #if defined DEBUG_SETTING
-    printf("\t\tStart setting\n\r\n");
+    printf("\n\r\t\tStart setting\n\r\n");
   #endif
   SysTick_Config(SystemCoreClock / 1000);   //1ms
   
   RCC->APB1ENR |= RCC_APB1ENR_PWREN;
   RCC->APB1ENR |= RCC_APB1ENR_BKPEN;
   RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
-  
-//  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP + AFIO_MAPR_I2C1_REMAP;
+
   AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
   
   RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
@@ -168,7 +168,7 @@ void Setting(void){
   RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPDEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPEEN;
-
+  
   
   Ee24cxxInit();
   ReadConfig();
@@ -179,7 +179,6 @@ void Setting(void){
   EthernetInit();
   EthernetSettings();
   #if defined DEBUG_SETTING
-    printf("\t\tStop setting\n\r\n");
+    printf("\n\r\t\tStop setting\n\r");
   #endif
-  
 }

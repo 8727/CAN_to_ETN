@@ -20,7 +20,7 @@
 #define DEVICE_NUMBER                    0x00        // Device number
 #define RTC_CALIBRATION                  0x00        // RTC CalibrationPpm
 #define LCD_ROTATION                     0x09        // 0x27 Rotation_270, 0x18 Rotation_180, 0x09 Rotation_90, 0x00 Rotation_0
-#define TIME_ZONE                        28          //
+#define TIME_ZONE                        19          //
 
 #define RF24_ADDR                        0x8727      //
 #define RF24_PRIM                        0x70
@@ -29,12 +29,15 @@
 #define RF24_POWER                       0x03        // 0x00 -18dBm, 0x01 -12dBm, 0x02 -6dBm, 0x03 0dBm
 #define RF24_CH                          0x70        // 0-125 0x00-0x7D
 
-#define IP_MAC                           (*(unsigned long *)0x1FFFF7F0) //0x1FFFF7E8 0x1FFFF7EC 0x1FFFF7F0
+#define IDCODE_1                           (*(unsigned long *)0x1FFFF7E8)
+#define IDCODE_2                           (*(unsigned long *)0x1FFFF7EC)
+#define IDCODE_3                           (*(unsigned long *)0x1FFFF7F0)
+  
 static const uint8_t IP_ADDR[] =         {10, 0, 0, 201};
 static const uint8_t IP_MASK[] =         {255, 255, 255, 0};
 static const uint8_t IP_GATE[] =         {10, 0, 0, 254};
 static const uint8_t IP_SEND[] =         {10, 0, 0, 252};
-static const uint8_t IP_NTP_P[] =        {89, 109, 251, 21};
+static const uint8_t IP_NTP_P[] =        {88, 147, 254, 230};
 static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 
 //#define HEATING_MAX_DEVICES              0x05

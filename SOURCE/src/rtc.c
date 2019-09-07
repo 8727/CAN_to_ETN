@@ -70,7 +70,7 @@ uint32_t RtcTimeZoneAdjustment(uint32_t time, uint8_t time_zone){
  
 void RtcTimeStamp(void){
   RtcTypeDef date;
-  RtcSecondsToTime(RtcGetSeconds(), &date);
+  RtcSecondsToTime(RtcTimeZoneAdjustment(RtcGetSeconds(),settings.timeZone), &date);
   printf("\t%d.%d.%d %d:%02d:%02d\t", date.day, date.month, date.year, date.hour, date.min, date.sec);
 }
 
