@@ -163,12 +163,12 @@
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>defNet,0x10</ItemText>
+          <ItemText>buffEeprom</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>seconds,0x0A</ItemText>
+          <ItemText>k</ItemText>
         </Ww>
         <Ww>
           <count>3</count>

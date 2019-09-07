@@ -130,7 +130,7 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 
 /* Define --------------------------------------------------------------------*/
 
-#define DATA_BUF_SIZE                    2048
+#define W5500_DATA_BUF_SIZE              0x0800
 #define MY_MAX_DHCP_RETRY                0x0A
 #define W5500_SOCK_DHCP                  0x07
 #define W5500_SOCK_SNTP                  0x06
@@ -140,7 +140,7 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 //#define  W5500_SOCK_SNTP                 0x02
 //#define  W5500_SOCK_SNTP                 0x01
 //#define  W5500_SOCK_HTTP                 0x00
-//#define  W5500_DATA_BUF_SIZE             2048
+
 
 /* Define --------------------------------------------------------------------*/
 struct settingsInitTypeDef{

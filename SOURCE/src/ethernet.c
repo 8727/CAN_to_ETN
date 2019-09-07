@@ -1,7 +1,7 @@
 #include "ethernet.h"
 
 wiz_NetInfo gWIZNETINFO;
-uint8_t dhcpBuff[DATA_BUF_SIZE];
+uint8_t dhcpBuff[W5500_DATA_BUF_SIZE];
 uint8_t my_dhcp_retry = 0x00;
 
 void EthernetCsLOW(void){ ETHERNET_CS_LOW; }
