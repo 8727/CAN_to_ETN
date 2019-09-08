@@ -1,13 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include "socket.h"
-#include "wizchip_conf.h"
-
 #include "httpServer.h"
-#include "httpParser.h"
-#include "httpUtil.h"
 
 #ifdef	_USE_SDCARD_
 #include "ff.h" 	// header file for FatFs library (FAT file system)
@@ -21,9 +12,9 @@
  * Private types/enumerations/variables
  ****************************************************************************/
 static uint8_t HTTPSock_Num[_WIZCHIP_SOCK_NUM_] = {0, };
-static st_http_request * http_request;				/**< Pointer to received HTTP request */
-static st_http_request * parsed_http_request;		/**< Pointer to parsed HTTP request */
-static uint8_t * http_response;						/**< Pointer to HTTP response */
+static st_http_request * http_request;                    /**< Pointer to received HTTP request */
+static st_http_request * parsed_http_request;             /**< Pointer to parsed HTTP request */
+static uint8_t * http_response;                           /**< Pointer to HTTP response */
 
 // ## For Debugging
 //static uint8_t uri_buf[128];
@@ -67,15 +58,12 @@ void default_wdt_reset(void) {;}
 void (*HTTPServer_ReStart)(void) = default_mcu_reset;
 void (*HTTPServer_WDT_Reset)(void) = default_wdt_reset;
 
-void httpServer_Sockinit(uint8_t cnt, uint8_t * socklist)
-{
-	uint8_t i;
-
-	for(i = 0; i < cnt; i++)
-	{
-		// Mapping the H/W socket numbers to the sequential index numbers
-		HTTPSock_Num[i] = socklist[i];
-	}
+void httpServer_Sockinit(uint8_t cnt, uint8_t * socklist){
+  uint8_t i;
+  for(i = 0; i < cnt; i++){
+    // Mapping the H/W socket numbers to the sequential index numbers
+    HTTPSock_Num[i] = socklist[i];
+  }
 }
 
 static uint8_t getHTTPSocketNum(uint8_t seqnum)
@@ -94,16 +82,11 @@ static int8_t getHTTPSequenceNum(uint8_t socket)
 	return -1;
 }
 
-void httpServer_init(uint8_t * tx_buf, uint8_t * rx_buf, uint8_t cnt, uint8_t * socklist)
-{
-	// User's shared buffer
-	pHTTP_TX = tx_buf;
-	pHTTP_RX = rx_buf;
-
-	// H/W Socket number mapping
-	httpServer_Sockinit(cnt, socklist);
+void httpServer_init(uint8_t * tx_buf, uint8_t * rx_buf, uint8_t cnt, uint8_t * socklist){
+  pHTTP_TX = tx_buf;
+  pHTTP_RX = rx_buf;
+  httpServer_Sockinit(cnt, socklist);
 }
-
 
 /* Register the call back functions for HTTP Server */
 void reg_httpServer_cbfunc(void(*mcu_reset)(void), void(*wdt_reset)(void))
@@ -125,7 +108,7 @@ void httpServer_run(uint8_t seqnum)
 	uint16_t destport = 0;
 #endif
 
-	http_request = (st_http_request *)pHTTP_RX;		// Structure of HTTP Request
+	http_request = (st_http_request *)pHTTP_RX; // Structure of HTTP Request
 	parsed_http_request = (st_http_request *)pHTTP_TX;
 
 	// Get the H/W socket number

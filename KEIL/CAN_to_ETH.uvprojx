@@ -472,6 +472,26 @@
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\w5500\sntp.c</FilePath>
             </File>
+            <File>
+              <FileName>web.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\web.c</FilePath>
+            </File>
+            <File>
+              <FileName>httpServer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\w5500\httpServer.c</FilePath>
+            </File>
+            <File>
+              <FileName>httpParser.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\w5500\httpParser.c</FilePath>
+            </File>
+            <File>
+              <FileName>httpUtil.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\w5500\httpUtil.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

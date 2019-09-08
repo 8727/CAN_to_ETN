@@ -10,6 +10,7 @@
 #include "rs485.h"
 #include "nrf24.h"
 #include "ethernet.h"
+#include "web.h"
 
 
 /* Define --------------------------------------------------------------------*/
@@ -129,11 +130,14 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 #define PRIORITY_W5500                   0x00
 
 /* Define --------------------------------------------------------------------*/
-#define W5500_DATA_BUF_SIZE              0x0800
+#define DATA_BUF_SIZE                    0x0800
 #define W5500_DHCP_BUF_SIZE              0x0200
+#define W5500_MAX_HTTPSOCK               0x04
+#define W5500_HTTP_PORT                  0x50 // 80
+
 #define W5500_SOCK_DHCP                  0x07
 #define W5500_SOCK_SNTP                  0x06
-//#define  W5500_SOCK_                 0x05
+#define  W5500_SOCK_                     0x05
 #define  W5500_SOCK_SEND                 0x04
 #define  W5500_SOCK_HTTP_3               0x03
 #define  W5500_SOCK_HTTP_2               0x02

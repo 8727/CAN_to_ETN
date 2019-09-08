@@ -4,8 +4,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 #include "stdio.h"
-
 #include "setting.h"
+
 /* Define --------------------------------------------------------------------*/
 #define INFO
 #define DEBUG_SETTING

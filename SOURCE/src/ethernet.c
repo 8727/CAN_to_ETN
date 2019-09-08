@@ -4,6 +4,7 @@ wiz_NetInfo gWIZNETINFO;
 uint8_t dhcpBuff[W5500_DHCP_BUF_SIZE];
 uint8_t my_dhcp_retry = 0x00;
 
+
 void EthernetCsLOW(void){ ETHERNET_CS_LOW; }
 void EthernetCsHIGHT(void){ ETHERNET_CS_HIGHT; }
 
@@ -19,6 +20,20 @@ void EthernetWriteByte(uint8_t byte){
   SPI1->DR = byte;
   while(!(SPI1->SR & SPI_SR_RXNE));
   (void)SPI1->DR;
+}
+
+void EthernetReadBurst(uint8_t *buf, uint16_t len){
+  uint8_t i = 0x00;
+  while(len--){
+    buf[i++] = EthernetReadByte();
+  }
+}
+
+void EthernetWriteBurst(uint8_t *buf, uint16_t len){
+  uint8_t i = 0x00;
+  while(len--){
+    EthernetWriteByte (buf[i++]);
+  }
 }
 
 void EthernetInfo(void){
@@ -40,6 +55,7 @@ void EthernetInfo(void){
     printf("\t=======================================\r\n");
     if(info.dhcp == NETINFO_DHCP){ printf("\tDHCP LEASED TIME : %ld Sec.\n\r\n", getDHCPLeasetime());}//получить время аренды на сервере DHCP
     printf("< OK >    Initialization ethernet\r\n");
+    WebInit();
   #endif
 }
 
@@ -126,8 +142,8 @@ void EthernetSettings(void){
   EthernetCsHIGHT();
  
   reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte); /*передаем функции чтения записи драйверу */
+//  reg_wizchip_spiburst_cbfunc(EthernetReadBurst, EthernetWriteBurst);
   reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT); /* CS function register */
-
   wizchip_init(W5500FifoSize, W5500FifoSize);
 }
 
