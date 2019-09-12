@@ -43,8 +43,6 @@
 40) [UTC + 14]    Line Island Time
 */
 
-uint8_t sntpBuff[MAX_SNTP_BUF_SIZE];
-
 void RTC_IRQHandler(void){
   if(RTC->CRL & RTC_CRL_SECF){
     RTC->CRL &= ~RTC_CRL_SECF;
@@ -53,17 +51,9 @@ void RTC_IRQHandler(void){
 //      RtcTimeStamp();
 //      printf("\r\n");
     #endif
-    
-    if(0x40 & settings.ethernet){
-      for(uint8_t i = 0; i < W5500_MAX_HTTPSOCK; i++) httpServer_run(i);  // HTTP server handler
+    if(settings.ethernet & 0x80){
+    for(uint8_t i = 0; i < W5500_MAX_HTTPSOCK; i++) httpServer_run(i);  // HTTP server handler
     }
-    
-    
-    if(0x40 & settings.ethernet) SNTP_init(W5500_SOCK_SNTP, settings.ipSntpP, sntpBuff);
-    if((0x40 & settings.ethernet) && (0x00 == settings.timerSntp)){ 
-      settings.timerSntp = settings.updatSntp; while(SNTP_run() != 1);
-    }else{ settings.timerSntp--; }
-    if(0x20 & settings.ethernet) EthernetDhcpRutine();
     settings.uptime++;
   }
 }

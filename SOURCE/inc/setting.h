@@ -35,7 +35,7 @@
 #define IDCODE_3                         (*(unsigned long *)0x1FFFF7F0)
   
 #define W5500_ETHERNET                   0x1F        // 0x80 linkOn, 0x40 setting, 0x20 run dhcp, 0x10 dhcp, 0x0F dhcp
-#define UPDATE_SNTP                      0x3B        // +1 = 60 min update sntp
+#define UPDATE_SNTP                      0x00        // 1h update sntp
   
 static const uint8_t IP_ADDR[] =         {10, 0, 0, 201};
 static const uint8_t IP_MASK[] =         {255, 255, 255, 0};
@@ -128,6 +128,9 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 #define PRIORITY_CAN_ERROR               0x00
 #define PRIORITY_RF24                    0x00
 #define PRIORITY_W5500                   0x00
+#define PRIORITY_PHYLINK                 0x0F
+#define PRIORITY_SNTP                    0x00
+#define PRIORITY_DHCP                    0x0F
 
 /* Define --------------------------------------------------------------------*/
 #define DATA_BUF_SIZE                    0x0800
@@ -179,8 +182,6 @@ struct settingsInitTypeDef{
   uint8_t  rf24TypeAddr4;
   // W5500
   uint8_t  ethernet;
-  uint16_t updatSntp;
-  uint16_t timerSntp;
   uint8_t  ipSend[0x04];
   uint8_t  ipSntpP[0x04];
   uint8_t  ipSntpS[0x04];
@@ -188,8 +189,13 @@ struct settingsInitTypeDef{
   
 };
 
+struct sntpInitTypeDef{
+  uint32_t update;
+  uint32_t timer;
+};
 
 extern struct settingsInitTypeDef settings;
+extern struct sntpInitTypeDef sntp;
 
 uint32_t GetTick(void);
 void DelayMs(uint32_t ms);
@@ -202,6 +208,8 @@ uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff);
 void CopyBeffer(uint8_t* receiver ,uint8_t* source, uint8_t addr, uint8_t len);
 
 void ReadConfig(void);
+void TimerDHCP(void);
+void TimerEthernetPHYLINK(void);
 void Setting(void);
 
 #endif /* _SETTING_H */

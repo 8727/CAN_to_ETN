@@ -2,6 +2,7 @@
 
 wiz_NetInfo gWIZNETINFO;
 uint8_t dhcpBuff[W5500_DHCP_BUF_SIZE];
+uint8_t sntpBuff[MAX_SNTP_BUF_SIZE];
 uint8_t my_dhcp_retry = 0x00;
 
 
@@ -37,7 +38,6 @@ void EthernetWriteBurst(uint8_t *buf, uint16_t len){
 }
 
 void EthernetInfo(void){
-  settings.ethernet |= 0x40;
   #ifdef DEBUG_ETHERNET
     uint8_t tmpstr[0x06] = {0,};
     wiz_NetInfo info;
@@ -55,7 +55,11 @@ void EthernetInfo(void){
     printf("\t=======================================\r\n");
     if(info.dhcp == NETINFO_DHCP){ printf("\tDHCP LEASED TIME : %ld Sec.\n\r\n", getDHCPLeasetime());}//получить время аренды на сервере DHCP
     printf("< OK >    Initialization ethernet\r\n");
+    SNTP_init(W5500_SOCK_SNTP, settings.ipSntpP, sntpBuff);
+    printf("< OK >    Start Timer SNTP\r\n");
+    while(SNTP_run() != 1);
     WebInit();
+    settings.ethernet |= 0x80;
   #endif
 }
 
@@ -104,31 +108,18 @@ void EthernetIpConflict(void){
   while(1); // this example is halt.
 }
 
-uint8_t EthernetPHYLINK(void){
-  uint8_t x;
-  ctlwizchip(CW_GET_PHYLINK, (void*)&x);
-  if(x == PHY_LINK_OFF){
-    #if defined DEBUG_ETHERNET
-      printf("Unknown PHY link status.\r\n");
-    #endif
-  }else{
-    settings.ethernet |= 0x80;
-    return true;
-  }
-  return false;
-}
-
 void EthernetInitIP(void){
+  TIM4->CR1 &= ~(TIM_CR1_CEN);
   setSHAR(gWIZNETINFO.mac); //настройка MAC
   if(gWIZNETINFO.dhcp == NETINFO_DHCP){
     DHCP_init(W5500_SOCK_DHCP, dhcpBuff);//передаем номер сокета  
     reg_dhcp_cbfunc(EthernetIPAssign, EthernetIPAssign, EthernetIpConflict);//передаем функции
-    settings.ethernet |= 0x20;
   }else{
     gWIZNETINFO.dhcp = NETINFO_STATIC;
     ctlnetwork(CN_SET_NETINFO, (void*)&gWIZNETINFO);   // назначаем статический ip
     EthernetInfo();
   }
+  TimerDHCP();
 }
 
 void EthernetSettings(void){
@@ -137,7 +128,7 @@ void EthernetSettings(void){
   ETHERNET_RESET_HIGHT;
   DelayMs(0x01);
   
-  uint8_t W5500FifoSize[8] = {2, 2, 2, 2, 2, 2, 2, 2};
+  uint8_t W5500FifoSize[0x08] = {0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02};
 
   EthernetCsHIGHT();
  
@@ -145,6 +136,7 @@ void EthernetSettings(void){
 //  reg_wizchip_spiburst_cbfunc(EthernetReadBurst, EthernetWriteBurst);
   reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT); /* CS function register */
   wizchip_init(W5500FifoSize, W5500FifoSize);
+  TimerEthernetPHYLINK();
 }
 
 void EthernetInit(void){

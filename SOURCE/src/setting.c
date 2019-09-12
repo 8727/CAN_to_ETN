@@ -2,6 +2,7 @@
 
 extern wiz_NetInfo gWIZNETINFO;
 struct settingsInitTypeDef settings;
+struct sntpInitTypeDef sntp;
 static __IO uint32_t msTicks;
 
 void SysTick_Handler(void){ msTicks++; }
@@ -137,8 +138,8 @@ void ReadConfig(void){
 /*----------------------------------------------------------------------------*/
   for(i = 0x00; i < 0x06; i++){ gWIZNETINFO.mac[0x05 - i] = buffEeprom[ADDR_W5500_MAC + i];} // MAC адрес
   settings.ethernet = buffEeprom[ADDR_W5500_ETHERNET];
-  settings.updatSntp = (((buffEeprom[ADDR_UPDATE_SNTP] + 0x01) * 0x3C) - 0x01); // min * 60sec
-  settings.timerSntp = settings.updatSntp;
+  sntp.update = ((buffEeprom[ADDR_UPDATE_SNTP] + 0x01) * 0x0E10); //
+  sntp.timer = sntp.update; 
   CopyBeffer(gWIZNETINFO.ip, buffEeprom, ADDR_W5500_IP, 0x04); // IP адрес
   CopyBeffer(gWIZNETINFO.sn, buffEeprom, ADDR_W5500_SN, 0x04); // SN адрес
   CopyBeffer(gWIZNETINFO.gw, buffEeprom, ADDR_W5500_GW, 0x04); // GW адрес
@@ -161,7 +162,83 @@ void ReadConfig(void){
   
   
   
+//void TIM2_IRQHandler(void){
+//  TIM2->SR &= ~TIM_SR_UIF;
 //}
+
+void TIM3_IRQHandler(void){
+  TIM3->SR &= ~TIM_SR_UIF;
+  EthernetDhcpRutine();
+  if(0x00 == sntp.timer){
+    sntp.timer = sntp.update;
+    while(SNTP_run() != 1);
+  }
+  sntp.timer--;
+}
+
+void TIM4_IRQHandler(void){
+  TIM4->SR &= ~TIM_SR_UIF;
+  uint8_t x;
+  ctlwizchip(CW_GET_PHYLINK, (void*)&x);
+  if(x == PHY_LINK_OFF){
+    #if defined DEBUG_ETHERNET
+      printf("Unknown PHY link status.\r\n");
+    #endif
+  }else{
+    EthernetInitIP();
+  }
+}
+ 
+//void TimerSNTP(void){
+//  RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+//  TIM2->SMCR = TIM_SMCR_SMS;
+//  TIM2->SMCR |= TIM_SMCR_TS_0;
+//  TIM2->PSC = 30; //0x0E0F 3600 1Hz:60:60=1h
+//  TIM2->ARR = settings.updatSntp;
+//  TIM2->SR = 0x00;
+//  TIM2->DIER |= TIM_DIER_UIE;
+//  TIM2->CR1 = TIM_CR1_DIR | TIM_CR1_CEN | TIM_CR1_ARPE;
+//  
+//  #if defined DEBUG_SETTING
+//    printf("< OK >    Start Timer SNTP\r\n");
+//  #endif
+//  
+//  NVIC_SetPriority(TIM2_IRQn, PRIORITY_SNTP);
+//  NVIC_EnableIRQ(TIM2_IRQn);
+//}
+
+void TimerDHCP(void){
+  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+  TIM3->PSC = 0x9C3F; // 39999 80000000:40000=2000Hz
+  TIM3->ARR = 0x7CF; // 1Hz
+  TIM3->SR = 0x00;
+  TIM3->DIER |= TIM_DIER_UIE;
+//  TIM3->CR2 = TIM_CR2_MMS_1;
+  TIM3->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
+  
+  #if defined DEBUG_SETTING
+    printf("< OK >    Start Timer DHCP\r\n");
+  #endif
+  
+  NVIC_SetPriority(TIM3_IRQn, PRIORITY_DHCP);
+  NVIC_EnableIRQ(TIM3_IRQn);
+}
+
+void TimerEthernetPHYLINK(void){
+  RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
+  TIM4->PSC = 0x9C3F; // 39999 80000000:40000=2000Hz
+  TIM4->ARR = 0xC7; // 10Hz
+  TIM4->SR = 0x00;
+  TIM4->DIER |= TIM_DIER_UIE;
+  TIM4->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
+  
+  #if defined DEBUG_SETTING
+    printf("< OK >    Start Timer PHYLINK\r\n");
+  #endif
+  
+  NVIC_SetPriority(TIM4_IRQn, PRIORITY_PHYLINK);
+  NVIC_EnableIRQ(TIM4_IRQn);
+}
 
 void Setting(void){
   #if defined DEBUG_SETTING

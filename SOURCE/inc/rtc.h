@@ -6,6 +6,7 @@
 #include "setting.h"
 #include "ethernet.h"
 #include "sntp.h"
+#include "httpServer.h"
 
 /* Define --------------------------------------------------------------------*/
 #define SEC_A_DAY   86400
