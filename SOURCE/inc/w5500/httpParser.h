@@ -60,7 +60,7 @@
 #define STATUS_SERV_UNAVAIL 503
 
 /* HTML Doc. for ERROR */
-static const char ERROR_HTML_PAGE[] = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\nContent-Length: 78\r\n\r\n<HTML>\r\n<BODY>\r\n404   Sorry, the page you requested was not found.\r\n</BODY>\r\n</HTML>\r\n\0";
+static const char ERROR_HTML_PAGE[] = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\nContent-Length: 78\r\n\r\n<HTML>\r\n<BODY>\r\n 404   Sorry, the page you requested was not found.\r\n</BODY>\r\n</HTML>\r\n\0";
 static const char ERROR_REQUEST_PAGE[] = "HTTP/1.1 400 OK\r\nContent-Type: text/html\r\nContent-Length: 50\r\n\r\n<HTML>\r\n<BODY>\r\nInvalid request.\r\n</BODY>\r\n</HTML>\r\n\0";
 
 #define HTML_HEADER       "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: "
