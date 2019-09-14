@@ -51,9 +51,6 @@ void RTC_IRQHandler(void){
 //      RtcTimeStamp();
 //      printf("\r\n");
     #endif
-    if(settings.ethernet & 0x80){
-    for(uint8_t i = 0; i < W5500_MAX_HTTPSOCK; i++) httpServer_run(i);  // HTTP server handler
-    }
     settings.uptime++;
   }
 }

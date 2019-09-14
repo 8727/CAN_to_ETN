@@ -30,7 +30,6 @@
 									 "oUpdate.doGet();},300);"\
 								 "}"
 
-
 /* Get: Digital I/O state/dir:  function DioCallback(o), getDio(o) */
 /* Set: Digital I/O state: 		function setDiostate(o) */
 /* Set: Digital I/O direction: 	function setDiodir(o) */
@@ -62,7 +61,6 @@
 								"dout.doPost('pin='+p+'&val='+v);"\
 							"}"
 
-
 /* Get: Analog Input: 	function AinCallback(o), getAin(o) */
 /* Additional function: function AinDrawgraph(o), getAin6_update() */
 #define wiz550web_ain_js	"function AinCallback(o){"\
@@ -89,7 +87,6 @@
 								"oUpdate.doGet();},300);"\
 								"setTimeout('getAin6_update()',500);"\
 							"}"
-
 
 /* Get: Analog Input: 	function AinCallback(o), getAin(o) */
 /* Additional function: function AinDrawGoogleGauge(o), getAin6_update() */
@@ -134,11 +131,9 @@
 								"setTimeout('getAin6_update()',500);"\
 							"}"
 
-
 /*************************************************************************************
  * HTML Pages (web pages)
  *************************************************************************************/
-
 #define index_page "<html>"\
 								"<head>"\
 								"<title>W5500-EVB Web Server</title>"\
@@ -161,7 +156,6 @@
 									"<a href='ain_gauge.html'>Ex3> Analog Input: Google Gauge Chart</a>"\
 								"</body>"\
 							"</html>"
-
 
 #define netinfo_page 		"<!DOCTYPE html>"\
 							"<html>"\
@@ -190,7 +184,6 @@
 								"</body>"\
 							"</html>"
 
-
 #define dio_page "<!DOCTYPE html>"\
 							"<html>"\
 								"<head>"\
@@ -214,7 +207,6 @@
 									"<!-- to do -->"\
 								"</body>"\
 							"</html>"
-
 
 #define ain_page "<!DOCTYPE html>"\
 							"<html>"\
@@ -243,8 +235,6 @@
 								"</body>"\
 							"</html>"
 
-
-
 #define ain_gauge_pagem "<!DOCTYPE html>"\
 							"<html>"\
 								"<head>"\
@@ -267,8 +257,7 @@
 									"</div>"\
 								"</body>"\
 							"</html>"
-
-
+              
 /* Base64 Image converter: http://base64.wutils.com/encoding-online/ */
 #define img_page			"<!DOCTYPE html>"\
 							"<html>"\
@@ -285,5 +274,4 @@
 									"</div>"\
 								"</body>"\
 							"</html>"
-
 #endif

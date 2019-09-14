@@ -150,7 +150,6 @@ void ReadConfig(void){
   
   
 /*----------------------------------------------------------------------------*/
-  
 }
 
 
@@ -162,9 +161,10 @@ void ReadConfig(void){
   
   
   
-//void TIM2_IRQHandler(void){
-//  TIM2->SR &= ~TIM_SR_UIF;
-//}
+void TIM2_IRQHandler(void){
+  TIM2->SR &= ~TIM_SR_UIF;
+  for(uint8_t i = 0; i < W5500_MAX_HTTPSOCK; i++) httpServer_run(i);  // HTTP server handler
+}
 
 void TIM3_IRQHandler(void){
   TIM3->SR &= ~TIM_SR_UIF;
@@ -174,6 +174,7 @@ void TIM3_IRQHandler(void){
     while(SNTP_run() != 1);
   }
   sntp.timer--;
+  httpServer_time_handler();
 }
 
 void TIM4_IRQHandler(void){
@@ -189,31 +190,28 @@ void TIM4_IRQHandler(void){
   }
 }
  
-//void TimerSNTP(void){
-//  RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
-//  TIM2->SMCR = TIM_SMCR_SMS;
-//  TIM2->SMCR |= TIM_SMCR_TS_0;
-//  TIM2->PSC = 30; //0x0E0F 3600 1Hz:60:60=1h
-//  TIM2->ARR = settings.updatSntp;
-//  TIM2->SR = 0x00;
-//  TIM2->DIER |= TIM_DIER_UIE;
-//  TIM2->CR1 = TIM_CR1_DIR | TIM_CR1_CEN | TIM_CR1_ARPE;
-//  
-//  #if defined DEBUG_SETTING
-//    printf("< OK >    Start Timer SNTP\r\n");
-//  #endif
-//  
-//  NVIC_SetPriority(TIM2_IRQn, PRIORITY_SNTP);
-//  NVIC_EnableIRQ(TIM2_IRQn);
-//}
+void TimerHTTP(void){
+  RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+  TIM2->PSC = 0x9C3F; // 39999 80000000:40000=2000Hz
+  TIM2->ARR = 0x27; // 50Hz
+  TIM2->SR = 0x00;
+  TIM2->DIER |= TIM_DIER_UIE;
+  TIM2->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
+  
+  #if defined DEBUG_SETTING
+    printf("< OK >    Start Timer HTTP\r\n");
+  #endif
+  
+  NVIC_SetPriority(TIM2_IRQn, PRIORITY_SNTP);
+  NVIC_EnableIRQ(TIM2_IRQn);
+}
 
-void TimerDHCP(void){
+void TimerDHCPSNTP(void){
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
   TIM3->PSC = 0x9C3F; // 39999 80000000:40000=2000Hz
   TIM3->ARR = 0x7CF; // 1Hz
   TIM3->SR = 0x00;
   TIM3->DIER |= TIM_DIER_UIE;
-//  TIM3->CR2 = TIM_CR2_MMS_1;
   TIM3->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
   
   #if defined DEBUG_SETTING

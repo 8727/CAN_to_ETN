@@ -5,7 +5,6 @@ uint8_t dhcpBuff[W5500_DHCP_BUF_SIZE];
 uint8_t sntpBuff[MAX_SNTP_BUF_SIZE];
 uint8_t my_dhcp_retry = 0x00;
 
-
 void EthernetCsLOW(void){ ETHERNET_CS_LOW; }
 void EthernetCsHIGHT(void){ ETHERNET_CS_HIGHT; }
 
@@ -59,7 +58,7 @@ void EthernetInfo(void){
     printf("< OK >    Start Timer SNTP\r\n");
     while(SNTP_run() != 1);
     WebInit();
-    settings.ethernet |= 0x80;
+    TimerHTTP();
   #endif
 }
 
@@ -119,7 +118,7 @@ void EthernetInitIP(void){
     ctlnetwork(CN_SET_NETINFO, (void*)&gWIZNETINFO);   // назначаем статический ip
     EthernetInfo();
   }
-  TimerDHCP();
+  TimerDHCPSNTP();
 }
 
 void EthernetSettings(void){
@@ -129,9 +128,7 @@ void EthernetSettings(void){
   DelayMs(0x01);
   
   uint8_t W5500FifoSize[0x08] = {0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02};
-
   EthernetCsHIGHT();
- 
   reg_wizchip_spi_cbfunc(EthernetReadByte, EthernetWriteByte); /*передаем функции чтения записи драйверу */
 //  reg_wizchip_spiburst_cbfunc(EthernetReadBurst, EthernetWriteBurst);
   reg_wizchip_cs_cbfunc(EthernetCsLOW, EthernetCsHIGHT); /* CS function register */

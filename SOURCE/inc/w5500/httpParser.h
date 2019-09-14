@@ -6,7 +6,7 @@
 #include <string.h>
 #include "socket.h"
 
-//#define _HTTPPARSER_DEBUG_
+#define _HTTPPARSER_DEBUG_
 
 #define MAX_URI_SIZE        1461
 //#define MAX_URI_SIZE        512

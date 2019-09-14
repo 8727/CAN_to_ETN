@@ -208,7 +208,8 @@ uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff);
 void CopyBeffer(uint8_t* receiver ,uint8_t* source, uint8_t addr, uint8_t len);
 
 void ReadConfig(void);
-void TimerDHCP(void);
+void TimerHTTP(void);
+void TimerDHCPSNTP(void);
 void TimerEthernetPHYLINK(void);
 void Setting(void);
 

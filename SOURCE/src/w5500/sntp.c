@@ -43,7 +43,7 @@ int8_t SNTP_run(void){
         recvfrom(NTP_SOCKET, data_buf, RSR_len, (uint8_t *)&destip, &destport);
         for(uint8_t i = 0x00; i < 0x04; i++){ seconds = (seconds << 0x08) | data_buf[startindex + i]; }
         seconds -= 0x83AA7E80; //2208988800;
-        printf("Sync SNTP Local : ");
+        printf("Sync Time Local : ");
         RtcTimeStamp();
         printf("SNTP :");
         RtcTimeStamp();

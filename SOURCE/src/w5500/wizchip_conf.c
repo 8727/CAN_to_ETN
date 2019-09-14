@@ -553,118 +553,100 @@ int8_t wizphy_getphypmode(void)
 }
 #endif
 
-#if _WIZCHIP_ == 5500
-void wizphy_reset(void)
-{
-   uint8_t tmp = getPHYCFGR();
-   tmp &= PHYCFGR_RST;
-   setPHYCFGR(tmp);
-   tmp = getPHYCFGR(); 
-   tmp |= ~PHYCFGR_RST;
-   setPHYCFGR(tmp);
+void wizphy_reset(void){
+  uint8_t tmp = getPHYCFGR();
+  tmp &= PHYCFGR_RST;
+  setPHYCFGR(tmp);
+  tmp = getPHYCFGR(); 
+  tmp |= ~PHYCFGR_RST;
+  setPHYCFGR(tmp);
 }
 
-void wizphy_setphyconf(wiz_PhyConf* phyconf)
-{
-   uint8_t tmp = 0;
-   if(phyconf->by == PHY_CONFBY_SW)
-      tmp |= PHYCFGR_OPMD;
-   else
-      tmp &= ~PHYCFGR_OPMD;
-   if(phyconf->mode == PHY_MODE_AUTONEGO)
-      tmp |= PHYCFGR_OPMDC_ALLA;
-   else
-   {
-      if(phyconf->duplex == PHY_DUPLEX_FULL)
-      {
-         if(phyconf->speed == PHY_SPEED_100)
-            tmp |= PHYCFGR_OPMDC_100F;
-         else
-            tmp |= PHYCFGR_OPMDC_10F;
-      }   
+void wizphy_setphyconf(wiz_PhyConf* phyconf){
+  uint8_t tmp = 0;
+  if(phyconf->by == PHY_CONFBY_SW)
+    tmp |= PHYCFGR_OPMD;
+  else
+    tmp &= ~PHYCFGR_OPMD;
+  if(phyconf->mode == PHY_MODE_AUTONEGO)
+    tmp |= PHYCFGR_OPMDC_ALLA;
+  else{
+    if(phyconf->duplex == PHY_DUPLEX_FULL){
+      if(phyconf->speed == PHY_SPEED_100)
+        tmp |= PHYCFGR_OPMDC_100F;
       else
-      {
-         if(phyconf->speed == PHY_SPEED_100)
-            tmp |= PHYCFGR_OPMDC_100H;
-         else
-            tmp |= PHYCFGR_OPMDC_10H;
-      }
-   }
-   setPHYCFGR(tmp);
-   wizphy_reset();
+        tmp |= PHYCFGR_OPMDC_10F;
+    }else{
+      if(phyconf->speed == PHY_SPEED_100)
+        tmp |= PHYCFGR_OPMDC_100H;
+      else
+        tmp |= PHYCFGR_OPMDC_10H;
+    }
+  }
+  setPHYCFGR(tmp);
+  wizphy_reset();
 }
 
-void wizphy_getphyconf(wiz_PhyConf* phyconf)
-{
-   uint8_t tmp = 0;
-   tmp = getPHYCFGR();
-   phyconf->by   = (tmp & PHYCFGR_OPMD) ? PHY_CONFBY_SW : PHY_CONFBY_HW;
-   switch(tmp & PHYCFGR_OPMDC_ALLA)
-   {
-      case PHYCFGR_OPMDC_ALLA:
-      case PHYCFGR_OPMDC_100FA: 
-         phyconf->mode = PHY_MODE_AUTONEGO;
-         break;
-      default:
-         phyconf->mode = PHY_MODE_MANUAL;
-         break;
-   }
-   switch(tmp & PHYCFGR_OPMDC_ALLA)
-   {
-      case PHYCFGR_OPMDC_100FA:
-      case PHYCFGR_OPMDC_100F:
-      case PHYCFGR_OPMDC_100H:
-         phyconf->speed = PHY_SPEED_100;
-         break;
-      default:
-         phyconf->speed = PHY_SPEED_10;
-         break;
-   }
-   switch(tmp & PHYCFGR_OPMDC_ALLA)
-   {
-      case PHYCFGR_OPMDC_100FA:
-      case PHYCFGR_OPMDC_100F:
-      case PHYCFGR_OPMDC_10F:
-         phyconf->duplex = PHY_DUPLEX_FULL;
-         break;
-      default:
-         phyconf->duplex = PHY_DUPLEX_HALF;
-         break;
-   }
+void wizphy_getphyconf(wiz_PhyConf* phyconf){
+  uint8_t tmp = 0;
+  tmp = getPHYCFGR();
+  phyconf->by = (tmp & PHYCFGR_OPMD) ? PHY_CONFBY_SW : PHY_CONFBY_HW;
+  switch(tmp & PHYCFGR_OPMDC_ALLA){
+    case PHYCFGR_OPMDC_ALLA:
+    case PHYCFGR_OPMDC_100FA: 
+       phyconf->mode = PHY_MODE_AUTONEGO;
+    break;
+    default:
+       phyconf->mode = PHY_MODE_MANUAL;
+    break;
+  }
+  switch(tmp & PHYCFGR_OPMDC_ALLA){
+    case PHYCFGR_OPMDC_100FA:
+    case PHYCFGR_OPMDC_100F:
+    case PHYCFGR_OPMDC_100H:
+       phyconf->speed = PHY_SPEED_100;
+    break;
+    default:
+       phyconf->speed = PHY_SPEED_10;
+    break;
+  }
+  switch(tmp & PHYCFGR_OPMDC_ALLA){
+    case PHYCFGR_OPMDC_100FA:
+    case PHYCFGR_OPMDC_100F:
+    case PHYCFGR_OPMDC_10F:
+       phyconf->duplex = PHY_DUPLEX_FULL;
+    break;
+    default:
+       phyconf->duplex = PHY_DUPLEX_HALF;
+    break;
+  }
 }
 
-void wizphy_getphystat(wiz_PhyConf* phyconf)
-{
-   uint8_t tmp = getPHYCFGR();
-   phyconf->duplex = (tmp & PHYCFGR_DPX_FULL) ? PHY_DUPLEX_FULL : PHY_DUPLEX_HALF;
-   phyconf->speed  = (tmp & PHYCFGR_SPD_100) ? PHY_SPEED_100 : PHY_SPEED_10;
+void wizphy_getphystat(wiz_PhyConf* phyconf){
+  uint8_t tmp = getPHYCFGR();
+  phyconf->duplex = (tmp & PHYCFGR_DPX_FULL) ? PHY_DUPLEX_FULL : PHY_DUPLEX_HALF;
+  phyconf->speed  = (tmp & PHYCFGR_SPD_100) ? PHY_SPEED_100 : PHY_SPEED_10;
 }
 
-int8_t wizphy_setphypmode(uint8_t pmode)
-{
-   uint8_t tmp = 0;
-   tmp = getPHYCFGR();
-   if((tmp & PHYCFGR_OPMD)== 0) return -1;
-   tmp &= ~PHYCFGR_OPMDC_ALLA;         
-   if( pmode == PHY_POWER_DOWN)
-      tmp |= PHYCFGR_OPMDC_PDOWN;
-   else
-      tmp |= PHYCFGR_OPMDC_ALLA;
-   setPHYCFGR(tmp);
-   wizphy_reset();
-   tmp = getPHYCFGR();
-   if( pmode == PHY_POWER_DOWN)
-   {
-      if(tmp & PHYCFGR_OPMDC_PDOWN) return 0;
-   }
-   else
-   {
-      if(tmp & PHYCFGR_OPMDC_ALLA) return 0;
-   }
-   return -1;
+int8_t wizphy_setphypmode(uint8_t pmode){
+  uint8_t tmp = 0;
+  tmp = getPHYCFGR();
+  if((tmp & PHYCFGR_OPMD)== 0) return -1;
+  tmp &= ~PHYCFGR_OPMDC_ALLA;
+  if( pmode == PHY_POWER_DOWN)
+    tmp |= PHYCFGR_OPMDC_PDOWN;
+  else
+    tmp |= PHYCFGR_OPMDC_ALLA;
+  setPHYCFGR(tmp);
+  wizphy_reset();
+  tmp = getPHYCFGR();
+  if( pmode == PHY_POWER_DOWN){
+    if(tmp & PHYCFGR_OPMDC_PDOWN) return 0;
+  }else{
+    if(tmp & PHYCFGR_OPMDC_ALLA) return 0;
+  }
+  return -1;
 }
-#endif
-
 
 void wizchip_setnetinfo(wiz_NetInfo* pnetinfo){
   setSHAR(pnetinfo->mac);
