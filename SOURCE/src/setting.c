@@ -92,7 +92,7 @@ void ReadConfig(void){
 /*----------------------------------------------------------------------------*/
     WriteData32ToBuffer(ADDR_W5500_MAC +0x02, (IDCODE_2 & 0xFCFFFF00), buffEeprom);
     WriteData16ToBuffer(ADDR_W5500_MAC, RF24_ADDR, buffEeprom);
-    buffEeprom[ADDR_W5500_ETHERNET] = W5500_ETHERNET;
+    buffEeprom[ADDR_W5500_ETHERNET] = W5500_DHCP;
     buffEeprom[ADDR_UPDATE_SNTP] = UPDATE_SNTP;
     WriteData32ToBuffer(ADDR_W5500_IP, ReadData32Buffer(0x00, (uint8_t*)IP_ADDR), buffEeprom);
     WriteData32ToBuffer(ADDR_W5500_SN, ReadData32Buffer(0x00, (uint8_t*)IP_MASK), buffEeprom);
@@ -137,7 +137,7 @@ void ReadConfig(void){
   
 /*----------------------------------------------------------------------------*/
   for(i = 0x00; i < 0x06; i++){ gWIZNETINFO.mac[0x05 - i] = buffEeprom[ADDR_W5500_MAC + i];} // MAC адрес
-  settings.ethernet = buffEeprom[ADDR_W5500_ETHERNET];
+  settings.dhcp = buffEeprom[ADDR_W5500_ETHERNET];
   sntp.update = ((buffEeprom[ADDR_UPDATE_SNTP] + 0x01) * 0x0E10); //
   sntp.timer = sntp.update; 
   CopyBeffer(gWIZNETINFO.ip, buffEeprom, ADDR_W5500_IP, 0x04); // IP адрес
@@ -146,7 +146,7 @@ void ReadConfig(void){
   CopyBeffer(settings.ipSend, buffEeprom, ADDR_W5500_SEND, 0x04); // SEND адрес
   CopyBeffer(settings.ipSntpP, buffEeprom, ADDR_W5500_NTP_P, 0x04); // SNTP адрес
   CopyBeffer(settings.ipSntpS, buffEeprom, ADDR_W5500_NTP_S, 0x04); // SNTP адрес
-  if(0x10 & settings.ethernet){ gWIZNETINFO.dhcp = NETINFO_DHCP; }else{ gWIZNETINFO.dhcp = NETINFO_STATIC; }
+  if(0x10 & settings.dhcp){ gWIZNETINFO.dhcp = NETINFO_DHCP; }else{ gWIZNETINFO.dhcp = NETINFO_STATIC; }
   
   
 /*----------------------------------------------------------------------------*/
@@ -202,7 +202,7 @@ void TimerHTTP(void){
     printf("< OK >    Start Timer HTTP\r\n");
   #endif
   
-  NVIC_SetPriority(TIM2_IRQn, PRIORITY_SNTP);
+  NVIC_SetPriority(TIM2_IRQn, PRIORITY_HTTP);
   NVIC_EnableIRQ(TIM2_IRQn);
 }
 

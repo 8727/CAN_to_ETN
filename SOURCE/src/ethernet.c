@@ -72,7 +72,7 @@ void EthernetDhcpRutine(void){
     case DHCP_RUNNING:
     case DHCP_FAILED://ошибка получения ip адреса от DHCP
       my_dhcp_retry++;//кол-во попыток
-      if(my_dhcp_retry > (0x0F & settings.ethernet)){
+      if(my_dhcp_retry > (0x0F & settings.dhcp)){
         #ifdef DEBUG_ETHERNET
           printf(">> DHCP %d Failed\r\n", my_dhcp_retry);
         #endif

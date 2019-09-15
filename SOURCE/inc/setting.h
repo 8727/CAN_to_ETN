@@ -17,7 +17,7 @@
 #define HW_BUILD                         "0.04"      // "0.04" 0x302E3034
 #define SW_BUILD                         "1.00"      // "1.00" 0x312E3030
 #define STATUS                           'D'         // 0x44 -default "D",
-#define DEVICE_TYPE                      0x07        // Device type  0x07 = Core, 0x06 = Water, 0x05 = Power/Timer start,0x04 = SW
+#define DEVICE_TYPE                      0x07        // Device type  0x07 = Core, 0x06 = Water, 0x05 = Power/Timer start, 0x04 = SW
 #define DEVICE_NUMBER                    0x00        // Device number
 #define RTC_CALIBRATION                  0x00        // RTC CalibrationPpm
 #define LCD_ROTATION                     0x09        // 0x27 Rotation_270, 0x18 Rotation_180, 0x09 Rotation_90, 0x00 Rotation_0
@@ -34,7 +34,7 @@
 #define IDCODE_2                         (*(unsigned long *)0x1FFFF7EC)
 #define IDCODE_3                         (*(unsigned long *)0x1FFFF7F0)
   
-#define W5500_ETHERNET                   0x1F        // 0x80 linkOn, 0x40 setting, 0x20 run dhcp, 0x10 dhcp, 0x0F dhcp
+#define W5500_DHCP                       0x1F        // 0x80 , 0x40 , 0x20 , 0x10 dhcp, 0x0F dhcp
 #define UPDATE_SNTP                      0x00        // 1h update sntp
   
 static const uint8_t IP_ADDR[] =         {10, 0, 0, 201};
@@ -131,6 +131,7 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 #define PRIORITY_PHYLINK                 0x0F
 #define PRIORITY_SNTP                    0x00
 #define PRIORITY_DHCP                    0x0F
+#define PRIORITY_HTTP                    0x0F
 
 /* Define --------------------------------------------------------------------*/
 #define DATA_BUF_SIZE                    0x0800
@@ -140,12 +141,12 @@ static const uint8_t IP_NTP_S[] =        {10, 0, 0, 254};
 
 #define W5500_SOCK_DHCP                  0x07
 #define W5500_SOCK_SNTP                  0x06
-#define  W5500_SOCK_                     0x05
-#define  W5500_SOCK_SEND                 0x04
-#define  W5500_SOCK_HTTP_3               0x03
-#define  W5500_SOCK_HTTP_2               0x02
-#define  W5500_SOCK_HTTP_1               0x01
-#define  W5500_SOCK_HTTP_0               0x00
+#define W5500_SOCK_                      0x05
+#define W5500_SOCK_SEND                  0x04
+#define W5500_SOCK_HTTP_3                0x03
+#define W5500_SOCK_HTTP_2                0x02
+#define W5500_SOCK_HTTP_1                0x01
+#define W5500_SOCK_HTTP_0                0x00
 
 
 /* Define --------------------------------------------------------------------*/
@@ -164,6 +165,7 @@ struct settingsInitTypeDef{
   // LCD
   uint16_t maxX;
   uint16_t maxY;
+  
   //RF24L01
   uint16_t rf24Addr;
   uint8_t  rf24Prim;
@@ -180,13 +182,12 @@ struct settingsInitTypeDef{
   uint8_t  rf24TypeAddr3;
   uint8_t  rf24TypeSend4;
   uint8_t  rf24TypeAddr4;
+  
   // W5500
-  uint8_t  ethernet;
+  uint8_t  dhcp;
   uint8_t  ipSend[0x04];
   uint8_t  ipSntpP[0x04];
   uint8_t  ipSntpS[0x04];
-  
-  
 };
 
 struct sntpInitTypeDef{

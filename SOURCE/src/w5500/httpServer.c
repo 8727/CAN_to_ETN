@@ -357,11 +357,9 @@ static void send_http_response_body(uint8_t s, uint8_t * uri_name, uint8_t * buf
       printf("> HTTPSocket[%d] : HTTP Response body - offset [ %ld ]\r\n", s, HTTPSock_Status[get_seqnum].file_offset);
     #endif
   }
-// ## 20141219 Eric added, for 'File object structure' (fs) allocation reduced (8 -> 1)
   #ifdef _USE_SDCARD_
     f_close(&fs);
   #endif
-// ## 20141219 added end
 }
 
 static void send_http_response_cgi(uint8_t s, uint8_t * buf, uint8_t * http_body, uint16_t file_len){
