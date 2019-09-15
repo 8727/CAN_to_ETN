@@ -112,32 +112,22 @@ void parse_http_request(st_http_request * request, uint8_t * buf ){
 }
 
 #ifdef _OLD_
-uint8_t * get_http_param_value(
-	char* uri, 
-	char* param_name
-	)
-{
-	char tempURI[MAX_URI_SIZE];
-	uint8_t * name = 0;
-	
-
-	if(!uri || !param_name) return 0;
-	
-	strcpy((char*)tempURI,uri);
-	if((name = (uint8_t*)strstr(tempURI, param_name)))
-	{
-		name += strlen(param_name) + 1; // strlen(para_name) + strlen("=")
-		if((name = (uint8_t*)strtok((char *)name,"& \r\n\t\0")))
-		{
-			unescape_http_url((char *)name);
-			replacetochar(name, '+', ' ');
-		}
-	}
-#ifdef _HTTPPARSER_DEBUG_
-	printf("  %s=%s",param_name,name);
-#endif	
-
-	return name;
+uint8_t * get_http_param_value(char* uri, char* param_name){
+  char tempURI[MAX_URI_SIZE];
+  uint8_t * name = 0;
+  if(!uri || !param_name) return 0;
+  strcpy((char*)tempURI,uri);
+  if((name = (uint8_t*)strstr(tempURI, param_name))){
+    name += strlen(param_name) + 1; // strlen(para_name) + strlen("=")
+    if((name = (uint8_t*)strtok((char *)name,"& \r\n\t\0"))){
+      unescape_http_url((char *)name);
+      replacetochar(name, '+', ' ');
+    }
+  }
+  #ifdef _HTTPPARSER_DEBUG_
+    printf("  %s=%s",param_name,name);
+  #endif
+  return name;
 }
 #else
 
@@ -184,24 +174,17 @@ uint8_t * get_http_param_value(char* uri, char* param_name){
 #endif
 
 #ifdef _OLD_
-uint8_t * get_http_uri_name(uint8_t * uri)
-{
-	char tempURI[MAX_URI_SIZE];
-	uint8_t * uri_name;
-
-	if(!uri) return 0;
-
-	strcpy(tempURI, (char *)uri);
-
-	uri_name = (uint8_t *)strtok(tempURI, " ?");
-
-	if(strcmp((char *)uri_name,"/")) uri_name++;
-
-#ifdef _HTTPPARSER_DEBUG_
-	printf("  uri_name = %s\r\n", uri_name);
-#endif	
-
-	return uri_name;
+uint8_t * get_http_uri_name(uint8_t * uri){
+  char tempURI[MAX_URI_SIZE];
+  uint8_t * uri_name;
+  if(!uri) return 0;
+  strcpy(tempURI, (char *)uri);
+  uri_name = (uint8_t *)strtok(tempURI, " ?");
+  if(strcmp((char *)uri_name,"/")) uri_name++;
+  #ifdef _HTTPPARSER_DEBUG_
+    printf("  uri_name = %s\r\n", uri_name);
+  #endif
+  return uri_name;
 }
 #else
 uint8_t get_http_uri_name(uint8_t * uri, uint8_t * uri_buf){

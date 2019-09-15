@@ -1,7 +1,7 @@
 #include "httpServer.h"
 
 #ifdef _USE_SDCARD_
-  #include "ff.h" 	// header file for FatFs library (FAT file system)
+  #include "ff.h"   // header file for FatFs library (FAT file system)
 #endif
 
 #ifndef DATA_BUF_SIZE
@@ -32,8 +32,8 @@ st_http_socket HTTPSock_Status[_WIZCHIP_SOCK_NUM_] = { {STATE_HTTP_IDLE, }, };
 static httpServer_webContent web_content[MAX_CONTENT_CALLBACK];
 
 #ifdef _USE_SDCARD_
-  FIL fs;		// FatFs: File object
-  FRESULT fr;	// FatFs: File function return code
+  FIL fs;     // FatFs: File object
+  FRESULT fr; // FatFs: File function return code
 #endif
 
 /*****************************************************************************
@@ -73,10 +73,8 @@ static uint8_t getHTTPSocketNum(uint8_t seqnum){
 
 static int8_t getHTTPSequenceNum(uint8_t socket){
   uint8_t i;
-
   for(i = 0; i < _WIZCHIP_SOCK_NUM_; i++)
     if(HTTPSock_Num[i] == socket) return i;
-
   return -1;
 }
 
@@ -98,18 +96,14 @@ void httpServer_run(uint8_t seqnum){
   uint8_t s;	// socket number
   uint16_t len;
   uint32_t gettime = 0;
-
   #ifdef _HTTPSERVER_DEBUG_
     uint8_t destip[4] = {0, };
     uint16_t destport = 0;
   #endif
-
   http_request = (st_http_request *)pHTTP_RX; // Structure of HTTP Request
   parsed_http_request = (st_http_request *)pHTTP_TX;
-
   // Get the H/W socket number
   s = getHTTPSocketNum(seqnum);
-
   /* HTTP Service Start */
   switch(getSn_SR(s)){
     case SOCK_ESTABLISHED:

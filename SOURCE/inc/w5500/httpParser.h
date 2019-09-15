@@ -1,5 +1,5 @@
-#ifndef	__HTTPPARSER_H__
-#define	__HTTPPARSER_H__
+#ifndef __HTTPPARSER_H__
+#define __HTTPPARSER_H__
 
 #include <stdint.h>
 #include <stdio.h>
@@ -40,7 +40,7 @@
 #define PTYPE_OTF     21 /**< Font type: OTF file. */
 #define PTYPE_WOFF    22 /**< Font type: WOFF file. */
 #define PTYPE_EOT     23 /**< Font type: EOT file. */
-#define PTYPE_SVG	    24 /**< Font type: SVG file. */
+#define PTYPE_SVG     24 /**< Font type: SVG file. */
 
 /* HTTP response */
 #define STATUS_OK           200
@@ -96,7 +96,7 @@ void make_http_response_head(char *, char, uint32_t);         /* make response h
 uint8_t * get_http_param_value(char* uri, char* param_name);  /* get the user-specific parameter value */
 uint8_t get_http_uri_name(uint8_t * uri, uint8_t * uri_buf);  /* get the requested URI name */
 #ifdef _OLD_
-uint8_t * get_http_uri_name(uint8_t * uri);
+  uint8_t * get_http_uri_name(uint8_t * uri);
 #endif
 
 // Utility functions
@@ -104,4 +104,4 @@ uint16_t ATOI(uint8_t * str, uint8_t base);
 void mid(char* src, char* s1, char* s2, char* sub);
 void inet_addr_(uint8_t * addr, uint8_t * ip);
 
-#endif	/* end of __HTTPPARSER_H__ */
+#endif  /* end of __HTTPPARSER_H__ */
