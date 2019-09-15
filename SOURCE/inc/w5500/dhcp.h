@@ -1,6 +1,8 @@
 #ifndef _DHCP_H_
 #define _DHCP_H_
 
+#include "socket.h"
+
 //#define _DHCP_DEBUG_
 
 /* Retry to processing DHCP */
@@ -11,7 +13,7 @@
 #define DHCP_SERVER_PORT        67       ///< DHCP server port number
 #define DHCP_CLIENT_PORT        68       ///< DHCP client port number
 #define MAGIC_COOKIE            0x63825363  ///< Any number. You can be modifyed it any number
-#define DCHP_HOST_NAME          "Data-Etn\0"
+#define DCHP_HOST_NAME          "Data-Eth\0"
 
 enum{
   DHCP_FAILED = 0,  ///< Procssing Fail
@@ -33,4 +35,4 @@ void getSNfromDHCP(uint8_t* ip);
 void getDNSfromDHCP(uint8_t* ip);
 uint32_t getDHCPLeasetime(void);
 
-#endif	/* _DHCP_H_ */
+#endif /* _DHCP_H_ */

@@ -9,6 +9,7 @@
 #include "wizchip_conf.h"
 #include "httpParser.h"
 #include "httpUtil.h"
+#include "webpage.h"
 
 // HTTP Server debug message enable
 #define _HTTPSERVER_DEBUG_

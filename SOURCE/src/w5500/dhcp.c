@@ -1,4 +1,3 @@
-#include "socket.h"
 #include "dhcp.h"
 
 /* If you want to display debug & procssing message, Define _DHCP_DEBUG_ in dhcp.h */

@@ -59,11 +59,6 @@
 #define STATUS_BAD_GATEWAY  502
 #define STATUS_SERV_UNAVAIL 503
 
-/* HTML Doc. for ERROR */
-static const char ERROR_HTML_PAGE[] = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\nContent-Length: 78\r\n\r\n<HTML>\r\n<BODY>\r\n 404   Sorry, the page you requested was not found.\r\n</BODY>\r\n</HTML>\r\n\0";
-static const char ERROR_UNAUTHORIZED_PAGE[] = "HTTP/1.1 401 Unauthorized\r\nContent-Type: text/html\r\nContent-Length: 50\r\n\r\nWWW-Authenticate: Basic realm=Arduino - iT4iT.CLUB\r\n\0";
-static const char ERROR_REQUEST_PAGE[] = "HTTP/1.1 400 OK\r\nContent-Type: text/html\r\nContent-Length: 50\r\n\r\n<HTML>\r\n<BODY>\r\nInvalid request.\r\n</BODY>\r\n</HTML>\r\n\0";
-
 #define HTML_HEADER       "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: "
 #define RES_HTMLHEAD_OK   "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: keep-alive\r\nContent-Length: "
 #define RES_TEXTHEAD_OK   "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: "
