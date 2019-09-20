@@ -16,13 +16,14 @@ static const char ERROR_REQUEST_PAGE[] = "HTTP/1.1 400 OK\r\nContent-Type: text/
 "<head>"\
 "<meta charset='UTF-8'>"\
 "<meta name='viewport' content='width=device-width,minimum-scale=1,maximum-scale=10'>"\
-"<title>Data-Ethernet</title>"\
-"<link rel='stylesheet' href='css/style.css'>"\
+"<title>DatNet</title>"\
+"<style>"\
+"</style>"\
 "</head>"\
 "<body>"\
 "<div class='content-wrapper'>"\
 "<header class='header'>"\
-"<p style='font-size: 30px; margin: 0; padding: 10px 1em;'>Data-Ethernet</p>"\
+"<p style='font-size: 30px; margin: 0; padding: 10px 1em;'>DatNet</p>"\
 "</header>"\
 "<div class='container clearfix'>"\
 "<main class='content'>"\
